@@ -73,6 +73,8 @@ test("static skill files have no placeholders and keep implicit invocation polic
   assert.doesNotMatch(mainSkill + reviewSkill, /\[TODO:|TODO\b/);
   assert.match(mainUi, /allow_implicit_invocation: true/);
   assert.match(reviewUi, /allow_implicit_invocation: true/);
+  assert.match(reviewSkill, /at least two additional reviewer arms/);
+  assert.doesNotMatch(reviewSkill, /\b(?:Opus|Kimi|GLM|GPT|Claude)\b/);
 });
 
 test("versioned install URLs and evidence claims match the package release", async () => {

@@ -1,0 +1,222 @@
+{
+  "schema": "aaa-code-release-evidence/v1",
+  "release": "0.3.0",
+  "captured_at": "2026-08-24T17:46:06Z",
+  "frozen_ref": "v0.3.0",
+  "subject": {
+    "files": [
+      {
+        "path": "package.json",
+        "sha256": "bb20e71bb5474d28790c41d211e1b3ee334a472d90115c93e0a6e7a31ed8334b"
+      },
+      {
+        "path": ".agents/plugins/marketplace.json",
+        "sha256": "2e89cb7885267c5d7f7121443c0f41efcab82a7d9a8a4f014913da8b1b09b4c9"
+      },
+      {
+        "path": ".claude-plugin/marketplace.json",
+        "sha256": "4897ee1c42007f2dbc9e1ee1d53a0b89740a6485e5487187d91e419358522472"
+      },
+      {
+        "path": "README.md",
+        "sha256": "fece7e529d1e8c6b1ccea9c548eb037b4f835e0e2d78c66c5e887a94c9f9efba"
+      },
+      {
+        "path": "docs/product-contract.md",
+        "sha256": "b75b68ae9e89ee8ab8091eeb781c51348c73827d8b688a8dd227bd743c5efed6"
+      },
+      {
+        "path": "docs/releasing.md",
+        "sha256": "d6ae7befef015fff05b3f6c2b91a7db006c940e764b6c74b7091b2a54e5ddaa2"
+      },
+      {
+        "path": "plugins/aaa-code/.codex-plugin/plugin.json",
+        "sha256": "6908f09423e0d242ae25c2d3235255a45413bb890ce6f4e4a1db6b7c466a8c6f"
+      },
+      {
+        "path": "plugins/aaa-code/.claude-plugin/plugin.json",
+        "sha256": "aaca3119cf51fc347e5005b4e218853824f26aef32c2be871c82500590ca89b8"
+      },
+      {
+        "path": "plugins/aaa-code/skills/aaa-code/SKILL.md",
+        "sha256": "a29a94ca6413f18abc09700b4a5268994a494a35a1ae705c01a02d930f88fe0f"
+      },
+      {
+        "path": "plugins/aaa-code/skills/aaa-code/agents/openai.yaml",
+        "sha256": "97b6b2113dde382d8c3f55cd4fd7453fcb287a1cbbe9508803198b54c6ca4148"
+      },
+      {
+        "path": "plugins/aaa-code/skills/aaa-code-review/SKILL.md",
+        "sha256": "d020a2ec87a4443fc15b2fa85530837ba0f5b2539cb3336e3f50cb11f6406d72"
+      },
+      {
+        "path": "plugins/aaa-code/skills/aaa-code-review/agents/openai.yaml",
+        "sha256": "91d08ba7bd12889b933c88a0f1754fe81b94198841e3ca2ac03151a4722f7001"
+      },
+      {
+        "path": "evals/adversarial-assurance-gate/case.yaml",
+        "sha256": "71953bcacf048f353d70d0e7236d0b3719e27bc28d3d7924887c614e9a9199db"
+      },
+      {
+        "path": "evals/assurance-family-collapse/case.yaml",
+        "sha256": "6757df3cfc0f1c0baf9520b152bc2a4296f2d7e8d882ea084ecf905755487f68"
+      },
+      {
+        "path": "evals/capability-gap/case.yaml",
+        "sha256": "86c9f3205fcb3b550d838e9184f8be7cfd693cff431690e7905e95449239939b"
+      },
+      {
+        "path": "evals/concurrent-work/case.yaml",
+        "sha256": "56732accdca7a105551218d73a04f8946a7d38e3149183e3f502e45d827eafe4"
+      },
+      {
+        "path": "evals/existing-owner/case.yaml",
+        "sha256": "d304ab3c843205a65b1ccd13b3c0d279bdbb6e865b35200d6cffd5311cafe019"
+      },
+      {
+        "path": "evals/growing-architecture/case.yaml",
+        "sha256": "ef84f48be2bc97f48c987c5f049a59a87c4c895df5ff34f2fe72669f9a6007ca"
+      },
+      {
+        "path": "evals/security-release-boundary/case.yaml",
+        "sha256": "c4e972fdb1676f6dd41a1ad347d07e8da778f32b66d9efc6449563d634d0397f"
+      },
+      {
+        "path": "evals/self-review-boundary/case.yaml",
+        "sha256": "5fe9a3f4e178ce6ab663fb7437133b5c992156d729addbd560e3ab8180d19188"
+      },
+      {
+        "path": "evals/trivial-edit/case.yaml",
+        "sha256": "02974eee3e047b328cfe29f1235ce93b80c2f2f06c95ee71cd94b6eb9028c794"
+      },
+      {
+        "path": "evals/unrelated-doc-summary/case.yaml",
+        "sha256": "0a5c5379cfa72fa4c94440884b736c64605288e9a1fa6e48f66cd62d182a05af"
+      }
+    ]
+  },
+  "gates": [
+    {
+      "id": "package-contract-local",
+      "host": "node",
+      "host_version": "24.13.0",
+      "command": "npm test",
+      "status": "PASS",
+      "execution_layer": "package",
+      "acceptance_stages": ["schema/topology"]
+    },
+    {
+      "id": "agent-skills-validators",
+      "host": "python",
+      "host_version": "PyYAML 6.0.3 via uv 0.10.12",
+      "command": "uv run --with PyYAML==6.0.3 quick_validate.py <skill>",
+      "validator_source": "Codex skill-creator quick_validate.py",
+      "validator_sha256": "1fd66498c219616fd9249eacdf16c458412ea9065a9d887fd716aeef03907762",
+      "status": "PASS",
+      "execution_layer": "source",
+      "acceptance_stages": ["schema/topology"]
+    },
+    {
+      "id": "codex-plugin-validator",
+      "host": "codex",
+      "host_version": "Codex plugin-creator bundled validator",
+      "command": "uv run --with PyYAML==6.0.3 validate_plugin.py plugins/aaa-code",
+      "validator_source": "Codex plugin-creator validate_plugin.py",
+      "validator_sha256": "6ff4bc1cc8ca94827c30c8299951efdac900ff38a5069c03e9a6554fc194a723",
+      "status": "PASS",
+      "execution_layer": "package",
+      "acceptance_stages": ["schema/topology"]
+    },
+    {
+      "id": "claude-strict-manifests",
+      "host": "claude-code",
+      "host_version": "2.1.210",
+      "command": "claude plugin validate --strict <plugin-or-marketplace>",
+      "status": "PASS",
+      "execution_layer": "package",
+      "acceptance_stages": ["schema/topology"]
+    },
+    {
+      "id": "claude-native-plugin-eval",
+      "host": "claude-code",
+      "host_version": "2.1.210",
+      "command": "claude plugin eval . --ablation with-without --runs 1 --threshold 1",
+      "status": "UNVERIFIED",
+      "execution_layer": "runtime",
+      "acceptance_stages": ["discovery", "invocation", "behavior"],
+      "residual": "The local CLI exposes this surface as early access; no selection receipt is claimed."
+    },
+    {
+      "id": "codex-implicit-trigger-matrix",
+      "host": "codex",
+      "host_version": "0.134.0",
+      "command": "host-native eval using the neutral trigger matrix",
+      "status": "UNVERIFIED",
+      "execution_layer": "runtime",
+      "acceptance_stages": ["invocation", "behavior"],
+      "residual": "No host selection receipt was captured for this candidate."
+    },
+    {
+      "id": "hermes-implicit-trigger-matrix",
+      "host": "hermes-agent",
+      "host_version": "0.20.0",
+      "command": "host-native eval using the neutral trigger matrix",
+      "status": "UNVERIFIED",
+      "execution_layer": "runtime",
+      "acceptance_stages": ["invocation", "behavior"],
+      "residual": "No host selection receipt was captured for this candidate."
+    },
+    {
+      "id": "adversarial-assurance-runtime",
+      "host": "multi-host",
+      "host_version": "not executed",
+      "command": "project-authorized primary plus two blind cross-family reviewer arms",
+      "status": "UNVERIFIED",
+      "execution_layer": "runtime",
+      "acceptance_stages": ["behavior"],
+      "residual": "No live cross-family reviewer arms were executed for this release."
+    }
+  ],
+  "behavioral_cases": [
+    { "case_id": "adversarial-assurance-gate", "status": "SPECIFIED" },
+    { "case_id": "assurance-family-collapse", "status": "SPECIFIED" },
+    { "case_id": "capability-gap", "status": "SPECIFIED" },
+    { "case_id": "concurrent-work", "status": "SPECIFIED" },
+    { "case_id": "existing-owner", "status": "SPECIFIED" },
+    { "case_id": "growing-architecture", "status": "SPECIFIED" },
+    { "case_id": "security-release-boundary", "status": "SPECIFIED" },
+    { "case_id": "self-review-boundary", "status": "SPECIFIED" },
+    { "case_id": "trivial-edit", "status": "SPECIFIED" },
+    { "case_id": "unrelated-doc-summary", "status": "SPECIFIED" }
+  ],
+  "assurance_contract": {
+    "minimum_additional_reviewer_arms": 2,
+    "distinct_resolved_model_families": 3,
+    "distinct_model_developers": 3,
+    "blind_until_both_complete": true,
+    "same_frozen_subject": true,
+    "resolved_identity_required": true,
+    "qualification_reference_required": true,
+    "disagreement_handling": "preserved",
+    "authority_granted": "none",
+    "execution_status": "UNVERIFIED",
+    "residual": "The contract and fixtures are static; no live cross-family reviewer arms were executed for this release."
+  },
+  "claims": [
+    "two instruction-only skills",
+    "no plugin runtime, hooks, daemon, telemetry, MCP server, or persistent state",
+    "versioned neutral ten-case behavioral prompt corpus",
+    "provider-neutral adversarial assurance contract with two additional blind reviewer arms",
+    "claim-matched static release receipt"
+  ],
+  "not_claimed": [
+    "universal automatic trigger reliability",
+    "executed multi-model assurance for this release",
+    "a hard-coded reviewer model roster",
+    "automatic reviewer routing, access, purchase, or fallback",
+    "measured code-quality improvement",
+    "security or release certification",
+    "compatibility with every coding agent",
+    "npm or PyPI publication"
+  ]
+}
