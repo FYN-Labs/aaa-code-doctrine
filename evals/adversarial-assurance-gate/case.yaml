@@ -1,0 +1,42 @@
+schema_version: "1.1"
+name: adversarial-assurance-gate
+description: Require two independent model-family arms at a material assurance gate.
+tags: [aaa-code-review, invocation, behavior, assurance]
+plugins:
+  - ../../plugins/aaa-code
+execution:
+  prompt: |
+    A team is about to accept a material inference-routing decision and its
+    evaluation gate. The candidate, evaluation data, and route table are frozen
+    at one commit, and the author has completed a self-review. Define the
+    minimum adversarial assurance gate before the chief audit officer evaluates
+    the package. State reviewer composition, artifact handling, evidence,
+    disagreement handling, failure behavior, and authority limits.
+  max_turns: 4
+  timeout_seconds: 180
+  allowed_tools: [Skill]
+runs: 1
+graders:
+  - type: tool_used
+    name: review-skill-selected
+    tool: Skill
+    input_match: aaa-code-review
+    min: 1
+    weight: 1
+    arm: with-only
+  - type: llm
+    name: requires-independent-zange
+    criteria: |
+      The answer requires two additional qualified adversarial reviewer arms
+      beyond the author or primary agent. The primary and both arms use three
+      distinct resolved model families and developers against the same frozen
+      artifact without seeing each other's findings before both complete. It
+      records actual model identity, family, relationship, a dated
+      decision-class-specific qualification reference, completion evidence,
+      and individual verdicts; preserves disagreements for the audit owner;
+      treats a missing or invalid arm as BLOCKED_ASSURANCE or UNVERIFIED; and
+      grants no merge, release, deploy, spend, or future-autonomy authority.
+    focus: last_message
+    weight: 2
+    arm: with-only
+expected_outcome: A material decision receives two blind, cross-family adversarial reviews without expanding authority.

@@ -71,8 +71,8 @@ Hermes already owns skill installation, so AAA Code uses that native surface
 instead of adding a Python plugin:
 
 ```bash
-hermes skills install https://raw.githubusercontent.com/FYN-Labs/aaa-code-doctrine/v0.2.1/plugins/aaa-code/skills/aaa-code/SKILL.md --yes
-hermes skills install https://raw.githubusercontent.com/FYN-Labs/aaa-code-doctrine/v0.2.1/plugins/aaa-code/skills/aaa-code-review/SKILL.md --yes
+hermes skills install https://raw.githubusercontent.com/FYN-Labs/aaa-code-doctrine/v0.3.0/plugins/aaa-code/skills/aaa-code/SKILL.md --yes
+hermes skills install https://raw.githubusercontent.com/FYN-Labs/aaa-code-doctrine/v0.3.0/plugins/aaa-code/skills/aaa-code-review/SKILL.md --yes
 ```
 
 ### Other skill-aware agents
@@ -95,6 +95,25 @@ Use $aaa-code-review at this package gate.
 The review is intentionally not always-on. Growing scope, production code,
 owners, state, or repair loops is the signal to stop and challenge the design.
 
+## The Zange at material gates
+
+Ordinary reviews stay single-reviewer. At a material architecture,
+inference-routing, eval, CAO, or audit gate, the primary agent must be challenged
+by at least two additional blind, read-only reviewer arms. The primary and both
+arms must resolve to three distinct model families from distinct model
+developers against the same frozen subject.
+
+Each arm reports independently before either sees the other's findings. The
+integrator preserves disagreements instead of averaging them. Missing,
+same-family, silently rerouted, incomplete, or identity-unverified arms leave
+the gate `BLOCKED_ASSURANCE` or `UNVERIFIED`, never PASS.
+
+Model names are deliberately not part of the durable contract. A project may
+currently qualify reviewers such as Opus 5, Kimi K3, GLM 5.3, or another
+frontier model, but configured names and public benchmarks do not count. The
+actual resolved identity, family, qualification evidence, completion, and
+individual verdict do.
+
 ## What AAA Code does not claim
 
 - It is not a replacement for correctness, security, performance, or release
@@ -108,6 +127,8 @@ owners, state, or repair loops is the signal to stop and challenge the design.
 - Research does not authorize installing a dependency or tool, accepting a
   license, spending money, or transferring private context.
 - Self-review is evidence, not independent approval or future autonomy.
+- AAA Code does not provision, route, purchase, or authorize reviewer models;
+  the owning host supplies already-authorized lanes.
 - Upstream benchmark results are not presented as FYN Labs results. Product
   claims require an independently reproducible AAA Code benchmark.
 
@@ -141,17 +162,17 @@ two separate dimensions: the code-execution layer actually exercised and the
 plugin acceptance stage actually reached. Their canonical definitions are in
 [the product contract](docs/product-contract.md#evidence-contract).
 
-The public neutral prompt corpus under [`evals/`](evals/) contains the seven
-behavioral contract cases plus an unrelated-work negative control, encoded as
-Claude-compatible static case files. Other hosts can run the same prompt text
-when they expose a traceable skill event. A doctrine-conforming answer without
-a recorded selection event is behavior evidence, not invocation evidence.
+The public neutral prompt corpus under [`evals/`](evals/) contains ten
+behavioral and negative-control cases, encoded as Claude-compatible static case
+files. Other hosts can run the same prompt text when they expose a traceable
+skill event. A doctrine-conforming answer without a recorded selection event
+is behavior evidence, not invocation evidence.
 
 Exact maintainer gates and receipt rules live in
 [the release playbook](docs/releasing.md). Each release record names the frozen
 subject, host version, date, dimensions actually exercised, commands, and
 residual gaps. A lower stage never implies a higher one. See the current
-[v0.2.1 evidence record](evidence/releases/v0.2.1.json).
+[v0.3.0 evidence record](evidence/releases/v0.3.0.json).
 
 ## Provenance
 

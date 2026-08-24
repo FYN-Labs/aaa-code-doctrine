@@ -7,6 +7,8 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const expectedCases = [
+  "adversarial-assurance-gate",
+  "assurance-family-collapse",
   "capability-gap",
   "concurrent-work",
   "existing-owner",
@@ -35,7 +37,7 @@ function promptFrom(caseYaml) {
   return match[1].replace(/^    /gm, "").trim();
 }
 
-test("the public eval suite covers every contract case and one unrelated negative control", async () => {
+test("the public eval suite covers every contract case and negative control", async () => {
   const caseIds = (await readdir(path.join(root, "evals"), { withFileTypes: true }))
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name)
@@ -63,6 +65,15 @@ test("the release receipt binds claims to the current product bytes", async () =
   assert.equal(receipt.schema, "aaa-code-release-evidence/v1");
   assert.equal(receipt.release, packageInfo.version);
   assert.equal(receipt.frozen_ref, `v${packageInfo.version}`);
+  assert.equal(receipt.assurance_contract.minimum_additional_reviewer_arms, 2);
+  assert.equal(receipt.assurance_contract.distinct_resolved_model_families, 3);
+  assert.equal(receipt.assurance_contract.distinct_model_developers, 3);
+  assert.equal(receipt.assurance_contract.blind_until_both_complete, true);
+  assert.equal(receipt.assurance_contract.same_frozen_subject, true);
+  assert.equal(receipt.assurance_contract.resolved_identity_required, true);
+  assert.equal(receipt.assurance_contract.qualification_reference_required, true);
+  assert.equal(receipt.assurance_contract.disagreement_handling, "preserved");
+  assert.equal(receipt.assurance_contract.authority_granted, "none");
   assert.deepEqual(receipt.behavioral_cases.map((entry) => entry.case_id).sort(), expectedCases);
   assert.deepEqual(
     receipt.subject.files
@@ -86,6 +97,14 @@ test("the release receipt binds claims to the current product bytes", async () =
       assert.ok(gate.selection_event, `${gate.id} needs an observable selection event`);
     }
   }
+
+  const assuranceGate = receipt.gates.find((gate) => gate.id === "adversarial-assurance-runtime");
+  assert.ok(assuranceGate, "receipt needs the adversarial assurance runtime gate");
+  assert.equal(assuranceGate.status, receipt.assurance_contract.execution_status);
+  assert.equal(
+    receipt.not_claimed.includes("executed multi-model assurance for this release"),
+    assuranceGate.status !== "PASS",
+  );
 
   assert.ok(receipt.not_claimed.includes("universal automatic trigger reliability"));
   assert.ok(receipt.not_claimed.includes("measured code-quality improvement"));

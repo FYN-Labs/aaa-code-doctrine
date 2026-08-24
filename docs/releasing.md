@@ -77,7 +77,17 @@ The minimum cross-host trigger matrix is:
 | `trivial-edit` | no `aaa-code-review`; `aaa-code` is allowed |
 | `unrelated-doc-summary` | neither skill |
 
-The other four cases test decision quality and authority boundaries.
+The other six cases test decision quality, authority boundaries, and
+adversarial-assurance integrity.
+
+For a required adversarial-assurance gate, record the frozen subject, challenge
+prompt digest, primary identity, and both additional reviewer arms. Each arm
+records configured route, actually resolved model, model family and developer,
+execution host, relationship, dated decision-class qualification reference,
+completion evidence, verdict, and report digest. Record whether both arms
+remained blind until completion and how every material disagreement was
+resolved. Configured aliases, consensus, or a shared gateway are not identity,
+qualification, or diversity evidence.
 
 ## 4. Merge and tag the exact candidate
 
@@ -137,3 +147,7 @@ The versioned JSON record under `evidence/releases/` binds claims to product
 file digests and lists PASS, BLOCKED, and UNVERIFIED gates separately. Never
 store credentials, auth files, account identifiers, raw private context,
 machine-local paths, or unsanitized debug traces in the repository.
+
+An assurance contract in a receipt is specification evidence until two valid
+cross-family arm reports actually exist. Static tests must never promote it to
+an executed assurance PASS.

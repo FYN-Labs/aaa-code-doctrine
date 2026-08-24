@@ -3,7 +3,7 @@ name: aaa-code
 description: Choose the smallest complete change at the correct native owner when writing, editing, debugging, testing, or refactoring code. Use for implementation work, placement decisions, duplicate cleanup, and scope control; keep security and explicit requirements intact.
 license: MIT
 metadata:
-  version: "0.2.1"
+  version: "0.3.0"
   author: FYN Labs
 ---
 
