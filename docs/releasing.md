@@ -88,12 +88,23 @@ gh pr checks PR_NUMBER --watch
 gh pr merge PR_NUMBER --merge --match-head-commit "$pr_head"
 
 git fetch origin main
-release_sha="$(git rev-parse origin/main)"
-git tag -a VERSION "$release_sha" -m "AAA Code VERSION"
+merge_sha="$(gh pr view PR_NUMBER --json mergeCommit --jq .mergeCommit.oid)"
+test "$(git rev-parse origin/main)" = "$merge_sha"
+git diff --exit-code "$pr_head" "$merge_sha" --
+
+git switch --detach "$merge_sha"
+git diff --check "$merge_sha^" "$merge_sha"
+npm test
+
+git tag -a VERSION "$merge_sha" -m "AAA Code VERSION"
 git push origin "refs/tags/VERSION"
 ```
 
-Never rewrite a published tag. Correct release mistakes with the next patch.
+Rerun the remaining skill and manifest validators from sections 1 and 2 on the
+detached merge commit before tagging. If `origin/main` has advanced beyond the
+PR merge, stop and resolve that new state explicitly; never tag whatever
+`origin/main` happens to contain. Never rewrite a published tag. Correct
+release mistakes with the next patch.
 
 ## 5. Verify public bytes
 

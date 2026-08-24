@@ -113,7 +113,8 @@ smallest correction and a behavioral case that would expose the failure.
 
 ## Release boundary
 
-Version `0.2.1` publishes source, GitHub installation paths, a host-neutral eval
-suite, and a versioned release receipt. It does not publish npm/PyPI packages,
-websites, telemetry, benchmark claims, universal trigger reliability, or a
-global installation. Those require separate evidence and authority.
+Version `0.2.1` publishes source, GitHub installation paths, a host-neutral
+prompt corpus in Claude-compatible static case files, and a versioned release
+receipt. It does not publish npm/PyPI packages, websites, telemetry, benchmark
+claims, universal trigger reliability, or a global installation. Those require
+separate evidence and authority.

@@ -64,6 +64,13 @@ test("the release receipt binds claims to the current product bytes", async () =
   assert.equal(receipt.release, packageInfo.version);
   assert.equal(receipt.frozen_ref, `v${packageInfo.version}`);
   assert.deepEqual(receipt.behavioral_cases.map((entry) => entry.case_id).sort(), expectedCases);
+  assert.deepEqual(
+    receipt.subject.files
+      .map((entry) => entry.path)
+      .filter((entry) => entry.startsWith("evals/"))
+      .sort(),
+    expectedCases.map((caseId) => `evals/${caseId}/case.yaml`).sort(),
+  );
 
   for (const subject of receipt.subject.files) {
     assert.equal(subject.sha256, sha256(await bytes(subject.path)), subject.path);
@@ -71,6 +78,10 @@ test("the release receipt binds claims to the current product bytes", async () =
 
   for (const gate of receipt.gates) {
     assert.match(gate.status, /^(PASS|BLOCKED|UNVERIFIED)$/);
+    if (["agent-skills-validators", "codex-plugin-validator"].includes(gate.id)) {
+      assert.match(gate.validator_sha256, /^[a-f0-9]{64}$/);
+      assert.ok(gate.validator_source);
+    }
     if (gate.status === "PASS" && gate.acceptance_stages.includes("invocation")) {
       assert.ok(gate.selection_event, `${gate.id} needs an observable selection event`);
     }

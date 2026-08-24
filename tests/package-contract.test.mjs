@@ -88,8 +88,9 @@ test("versioned install URLs and evidence claims match the package release", asy
   assert.match(readme, /static package contract; it does not prove/);
 });
 
-test("all public text artifacts exclude machine-local and credential-shaped data", async () => {
+test("published product artifacts exclude machine-local and credential-shaped data", async () => {
   const relativeFiles = [
+    ".gitignore",
     "AGENTS.md",
     "LICENSE",
     "README.md",

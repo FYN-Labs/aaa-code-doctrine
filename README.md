@@ -141,11 +141,11 @@ two separate dimensions: the code-execution layer actually exercised and the
 plugin acceptance stage actually reached. Their canonical definitions are in
 [the product contract](docs/product-contract.md#evidence-contract).
 
-The public [`evals/`](evals/) suite contains the seven behavioral contract
-cases plus an unrelated-work negative control. Hosts with a traceable skill
-event can run those neutral prompts without naming either skill. A doctrine-
-conforming answer without a recorded selection event is behavior evidence, not
-invocation evidence.
+The public neutral prompt corpus under [`evals/`](evals/) contains the seven
+behavioral contract cases plus an unrelated-work negative control, encoded as
+Claude-compatible static case files. Other hosts can run the same prompt text
+when they expose a traceable skill event. A doctrine-conforming answer without
+a recorded selection event is behavior evidence, not invocation evidence.
 
 Exact maintainer gates and receipt rules live in
 [the release playbook](docs/releasing.md). Each release record names the frozen

@@ -40,6 +40,38 @@
       {
         "path": "plugins/aaa-code/skills/aaa-code-review/agents/openai.yaml",
         "sha256": "91d08ba7bd12889b933c88a0f1754fe81b94198841e3ca2ac03151a4722f7001"
+      },
+      {
+        "path": "evals/capability-gap/case.yaml",
+        "sha256": "86c9f3205fcb3b550d838e9184f8be7cfd693cff431690e7905e95449239939b"
+      },
+      {
+        "path": "evals/concurrent-work/case.yaml",
+        "sha256": "56732accdca7a105551218d73a04f8946a7d38e3149183e3f502e45d827eafe4"
+      },
+      {
+        "path": "evals/existing-owner/case.yaml",
+        "sha256": "d304ab3c843205a65b1ccd13b3c0d279bdbb6e865b35200d6cffd5311cafe019"
+      },
+      {
+        "path": "evals/growing-architecture/case.yaml",
+        "sha256": "ef84f48be2bc97f48c987c5f049a59a87c4c895df5ff34f2fe72669f9a6007ca"
+      },
+      {
+        "path": "evals/security-release-boundary/case.yaml",
+        "sha256": "c4e972fdb1676f6dd41a1ad347d07e8da778f32b66d9efc6449563d634d0397f"
+      },
+      {
+        "path": "evals/self-review-boundary/case.yaml",
+        "sha256": "5fe9a3f4e178ce6ab663fb7437133b5c992156d729addbd560e3ab8180d19188"
+      },
+      {
+        "path": "evals/trivial-edit/case.yaml",
+        "sha256": "02974eee3e047b328cfe29f1235ce93b80c2f2f06c95ee71cd94b6eb9028c794"
+      },
+      {
+        "path": "evals/unrelated-doc-summary/case.yaml",
+        "sha256": "0a5c5379cfa72fa4c94440884b736c64605288e9a1fa6e48f66cd62d182a05af"
       }
     ]
   },
@@ -58,6 +90,8 @@
       "host": "python",
       "host_version": "PyYAML 6.0.3 via uv 0.10.12",
       "command": "uv run --with PyYAML==6.0.3 quick_validate.py <skill>",
+      "validator_source": "Codex skill-creator quick_validate.py",
+      "validator_sha256": "1fd66498c219616fd9249eacdf16c458412ea9065a9d887fd716aeef03907762",
       "status": "PASS",
       "execution_layer": "source",
       "acceptance_stages": ["schema/topology"]
@@ -65,8 +99,10 @@
     {
       "id": "codex-plugin-validator",
       "host": "codex",
-      "host_version": "bundled validator",
+      "host_version": "Codex plugin-creator bundled validator",
       "command": "uv run --with PyYAML==6.0.3 validate_plugin.py plugins/aaa-code",
+      "validator_source": "Codex plugin-creator validate_plugin.py",
+      "validator_sha256": "6ff4bc1cc8ca94827c30c8299951efdac900ff38a5069c03e9a6554fc194a723",
       "status": "PASS",
       "execution_layer": "package",
       "acceptance_stages": ["schema/topology"]
@@ -124,7 +160,7 @@
   "claims": [
     "two instruction-only skills",
     "no plugin runtime, hooks, daemon, telemetry, MCP server, or persistent state",
-    "versioned neutral behavioral eval suite",
+    "versioned neutral behavioral prompt corpus",
     "claim-matched static release receipt"
   ],
   "not_claimed": [
