@@ -1,0 +1,6 @@
+interface:
+  display_name: "AAA Code"
+  short_description: "Smallest native change with proof"
+  default_prompt: "Use $aaa-code to implement the smallest complete native change."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,6 @@
+interface:
+  display_name: "AAA Code Review"
+  short_description: "Phase-bound simplicity review"
+  default_prompt: "Use $aaa-code-review to challenge this material change for avoidable mechanism."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,12 @@
+{
+  "name": "aaa-code",
+  "version": "0.1.0",
+  "description": "Aligned, autonomous, auditable coding through the smallest complete native change.",
+  "author": {
+    "name": "FYN Labs",
+    "url": "https://github.com/FYN-Labs"
+  },
+  "homepage": "https://github.com/FYN-Labs/aaa-code-doctrine",
+  "repository": "https://github.com/FYN-Labs/aaa-code-doctrine",
+  "license": "MIT"
+}

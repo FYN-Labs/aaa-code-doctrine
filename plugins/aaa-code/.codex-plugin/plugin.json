@@ -1,0 +1,29 @@
+{
+  "name": "aaa-code",
+  "version": "0.1.0",
+  "description": "Aligned, autonomous, auditable coding through the smallest complete native change.",
+  "author": {
+    "name": "FYN Labs",
+    "url": "https://github.com/FYN-Labs"
+  },
+  "homepage": "https://github.com/FYN-Labs/aaa-code-doctrine",
+  "repository": "https://github.com/FYN-Labs/aaa-code-doctrine",
+  "license": "MIT",
+  "keywords": ["agentic-coding", "clean-code", "native-first", "yagni", "code-review"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "AAA Code",
+    "shortDescription": "Smallest native change with proof",
+    "longDescription": "Keep agent-written code aligned with the original problem, autonomous within authority, and auditable through a small native path and real verification.",
+    "developerName": "FYN Labs",
+    "category": "Developer Tools",
+    "capabilities": ["Instructions"],
+    "websiteURL": "https://github.com/FYN-Labs/aaa-code-doctrine",
+    "defaultPrompt": [
+      "Use AAA Code for this implementation.",
+      "Review this material change for avoidable mechanism.",
+      "Find the smallest complete native solution."
+    ],
+    "brandColor": "#111111"
+  }
+}

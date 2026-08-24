@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "fyn-labs-aaa-code",
+  "description": "AAA Code by FYN Labs: the smallest complete native change with proof.",
+  "owner": {
+    "name": "FYN Labs",
+    "url": "https://github.com/FYN-Labs"
+  },
+  "plugins": [
+    {
+      "name": "aaa-code",
+      "description": "Aligned, autonomous, auditable coding without parallel machinery.",
+      "source": "./plugins/aaa-code",
+      "category": "development"
+    }
+  ]
+}
