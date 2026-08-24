@@ -48,8 +48,9 @@ validator is a gap, not a carried-forward PASS.
 
 ## 3. Run behavioral evals where the host exposes evidence
 
-The neutral cases under `evals/` intentionally do not name AAA Code or either
-skill. Claude Code versions that expose the native plugin-eval surface can run:
+The neutral execution prompts under `evals/` intentionally do not name AAA
+Code or either skill. Claude Code versions that expose the native plugin-eval
+surface can run:
 
 ```bash
 RUN_ROOT=/path/to/empty/eval-output

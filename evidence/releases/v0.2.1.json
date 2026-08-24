@@ -1,7 +1,7 @@
 {
   "schema": "aaa-code-release-evidence/v1",
   "release": "0.2.1",
-  "captured_at": "2026-08-24T16:22:41Z",
+  "captured_at": "2026-08-24T16:34:30Z",
   "frozen_ref": "v0.2.1",
   "subject": {
     "files": [
