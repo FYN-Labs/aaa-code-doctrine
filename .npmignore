@@ -1,0 +1,4 @@
+# Enterprise collateral and the marketing site have their own release
+# lifecycles. Neither is part of the frozen v0.3.0 skill package.
+docs/enterprise/
+site/

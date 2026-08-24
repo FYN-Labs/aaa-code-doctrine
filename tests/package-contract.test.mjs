@@ -1,11 +1,14 @@
 import assert from "node:assert/strict";
+import { execFile } from "node:child_process";
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
+import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const pluginRoot = path.join(root, "plugins", "aaa-code");
+const execFileAsync = promisify(execFile);
 
 async function json(relativePath) {
   return JSON.parse(await readFile(path.join(root, relativePath), "utf8"));
@@ -64,6 +67,20 @@ test("the plugin file topology is fail-closed and contains instructions only", a
   ]);
 });
 
+test("the root package tarball excludes separate enterprise and website surfaces", async () => {
+  const { stdout } = await execFileAsync(
+    "npm",
+    ["pack", "--dry-run", "--json"],
+    { cwd: root },
+  );
+  const [pack] = JSON.parse(stdout);
+  const paths = pack.files.map(({ path: file }) => file);
+
+  assert.ok(paths.includes("plugins/aaa-code/skills/aaa-code/SKILL.md"));
+  assert.equal(paths.some((file) => file.startsWith("docs/enterprise/")), false);
+  assert.equal(paths.some((file) => file === "site" || file.startsWith("site/")), false);
+});
+
 test("static skill files have no placeholders and keep implicit invocation policy", async () => {
   const mainSkill = await text("plugins/aaa-code/skills/aaa-code/SKILL.md");
   const reviewSkill = await text("plugins/aaa-code/skills/aaa-code-review/SKILL.md");
@@ -93,6 +110,7 @@ test("versioned install URLs and evidence claims match the package release", asy
 test("published product artifacts exclude machine-local and credential-shaped data", async () => {
   const relativeFiles = [
     ".gitignore",
+    ".npmignore",
     "AGENTS.md",
     "LICENSE",
     "README.md",
