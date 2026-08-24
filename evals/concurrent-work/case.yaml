@@ -1,0 +1,34 @@
+schema_version: "1.1"
+name: concurrent-work
+description: Preserve unrelated work and serialize one shared artifact.
+tags: [aaa-code, behavior, collaboration]
+plugins:
+  - ../../plugins/aaa-code
+execution:
+  prompt: |
+    The working tree contains an unrelated uncommitted change in
+    src/payments.ts. Two agents can implement src/export.ts and src/report.ts,
+    but both may need package-lock.json. Give the ownership, integration, and
+    verification plan. Do not discard existing work.
+  max_turns: 4
+  timeout_seconds: 180
+  allowed_tools: [Skill]
+runs: 1
+graders:
+  - type: tool_used
+    name: implementation-skill-selected
+    tool: Skill
+    input_match: aaa-code
+    min: 1
+    weight: 1
+    arm: with-only
+  - type: llm
+    name: protects-shared-work
+    criteria: |
+      The answer preserves src/payments.ts, assigns disjoint source paths,
+      serializes package-lock.json under one owner, and requires checks on the
+      final combined state rather than only on isolated slices.
+    focus: last_message
+    weight: 2
+    arm: with-only
+expected_outcome: Parallel work remains disjoint and the shared lockfile is serialized.

@@ -3,7 +3,7 @@ name: aaa-code-review
 description: Run a read-only simplicity and ownership challenge at a material phase boundary, package gate, or when scope, production code, or repair loops are growing. Do not invoke after every trivial edit and do not treat it as a full correctness or security audit.
 license: MIT
 metadata:
-  version: "0.2.0"
+  version: "0.2.1"
   author: FYN Labs
 ---
 

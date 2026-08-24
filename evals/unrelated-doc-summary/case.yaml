@@ -1,0 +1,40 @@
+schema_version: "1.1"
+name: unrelated-doc-summary
+description: Negative control for unrelated non-coding work.
+tags: [invocation, negative-control]
+plugins:
+  - ../../plugins/aaa-code
+execution:
+  prompt: |
+    Summarize this sentence in five words: The quarterly planning meeting moves
+    from Tuesday morning to Thursday afternoon.
+  max_turns: 2
+  timeout_seconds: 90
+  allowed_tools: [Skill]
+runs: 1
+graders:
+  - type: tool_used
+    name: no-implementation-skill
+    tool: Skill
+    input_match: aaa-code
+    min: 0
+    max: 0
+    weight: 1
+    arm: both
+  - type: tool_used
+    name: no-review-skill
+    tool: Skill
+    input_match: aaa-code-review
+    min: 0
+    max: 0
+    weight: 1
+    arm: both
+  - type: regex
+    name: concise-summary
+    target: last_message
+    pattern: "^\\S+(?:\\s+\\S+){0,4}$"
+    flags: m
+    match: contains
+    weight: 1
+    arm: both
+expected_outcome: Unrelated summarization selects neither coding skill.

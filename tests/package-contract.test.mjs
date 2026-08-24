@@ -88,16 +88,32 @@ test("versioned install URLs and evidence claims match the package release", asy
   assert.match(readme, /static package contract; it does not prove/);
 });
 
-test("public doctrine files exclude machine-local and credential-shaped data", async () => {
-  for (const relativePath of [
+test("published product artifacts exclude machine-local and credential-shaped data", async () => {
+  const relativeFiles = [
+    ".gitignore",
     "AGENTS.md",
+    "LICENSE",
     "README.md",
-    "docs/product-contract.md",
-    "plugins/aaa-code/skills/aaa-code/SKILL.md",
-    "plugins/aaa-code/skills/aaa-code-review/SKILL.md",
+    "THIRD_PARTY_NOTICES.md",
+    "package.json",
+  ];
+  for (const directory of [
+    ".agents",
+    ".claude-plugin",
+    ".github",
+    "docs",
+    "evals",
+    "evidence",
+    "plugins",
   ]) {
+    for (const absolute of await filesUnder(path.join(root, directory))) {
+      relativeFiles.push(path.relative(root, absolute).split(path.sep).join("/"));
+    }
+  }
+
+  for (const relativePath of relativeFiles) {
     const contents = await text(relativePath);
-    assert.doesNotMatch(contents, /\/Users\/|gh[opsu]_[A-Za-z0-9]+|-----BEGIN [A-Z ]*PRIVATE KEY-----/);
+    assert.doesNotMatch(contents, /\/Users\/|gh[opsu]_[A-Za-z0-9]+|-----BEGIN [A-Z ]*PRIVATE KEY-----|\bCompany\.OS\b|\bMAT-\d+\b/);
   }
 });
 
