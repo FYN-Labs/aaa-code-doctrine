@@ -1,0 +1,35 @@
+schema_version: "1.1"
+name: growing-architecture
+description: Challenge a material expansion before the next package gate.
+tags: [aaa-code-review, invocation, behavior]
+plugins:
+  - ../../plugins/aaa-code
+execution:
+  prompt: |
+    A small export fix has grown into two stores, a queue, a validator, and
+    three new cross-layer adapters. Unit tests are green and the team wants to
+    advance the package. Review whether the architecture should proceed and
+    return a structured verdict.
+  max_turns: 4
+  timeout_seconds: 180
+  allowed_tools: [Skill]
+runs: 1
+graders:
+  - type: tool_used
+    name: review-skill-selected
+    tool: Skill
+    input_match: aaa-code-review
+    min: 1
+    weight: 1
+    arm: with-only
+  - type: llm
+    name: challenges-mechanism
+    criteria: |
+      The answer restates the original problem, inventories the new mechanism,
+      distinguishes green unit tests from architecture proof, and returns
+      REVISE or STOP_AND_REFRAME unless repository evidence proves the new
+      owners are necessary.
+    focus: last_message
+    weight: 2
+    arm: with-only
+expected_outcome: Material scope growth triggers a bounded simplicity review.

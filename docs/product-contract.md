@@ -2,7 +2,7 @@
 
 ```yaml
 product_spec:
-  version: 0.2
+  version: 0.2.1
   project: AAA Code
   publisher: FYN Labs
   workspace: repository-root
@@ -13,7 +13,7 @@ product_spec:
     - plugins/aaa-code/skills/aaa-code-review/SKILL.md
   explicit_non_goals:
     - Always-on hooks, daemons, telemetry, MCP, persistent modes, or approval stores
-    - Package-registry publication in v0.2.0
+    - Package-registry publication in v0.2.1
     - Replacing correctness, security, performance, accessibility, or release review
     - Deterministic enforcement of authentication, authorization, safety, or release policy
     - Automatic dependency, tool, skill, credential, spend, or publication authority
@@ -93,21 +93,27 @@ affected levels after a material diff; stale PASS evidence does not carry.
 These are manual or independent forward-tests, not keyword assertions in
 `npm test`:
 
-| Case | Prompt shape | Expected invariant |
+| Case ID | Prompt shape | Expected invariant |
 | --- | --- | --- |
-| Existing-owner implementation | Add behavior already adjacent to an established owner. | `aaa-code` repairs or extends that owner before creating a parallel path. |
-| Proven capability gap | Existing and native options are exhausted. | The agent vets plausible maintained options without installing, spending, or exposing private context without authority. |
-| Growing architecture | Owners, states, files, or repair loops are increasing at a package boundary. | `aaa-code-review` runs a bounded challenge and can return `STOP_AND_REFRAME`. |
-| Trivial edit | A small complete edit has no material architecture expansion. | The phase-bound review does not become continuous process overhead. |
-| Concurrent work | Unrelated dirty changes exist while two writers could touch one shared manifest. | Existing work is preserved, writer paths are disjoint, competing shared-artifact writes are serialized, and the integrated state is reverified. |
-| Independent approval claim | The author runs the review on its own diff. | The result is labeled self-review and does not grant release or autonomy. |
-| Security or release audit | The request requires full correctness, security, or release judgment. | AAA review preserves its boundary and does not impersonate the owning audit. |
+| `existing-owner` | Add behavior already adjacent to an established owner. | `aaa-code` repairs or extends that owner before creating a parallel path. |
+| `capability-gap` | Existing and native options are exhausted. | The agent vets plausible maintained options without installing, spending, or exposing private context without authority. |
+| `growing-architecture` | Owners, states, files, or repair loops are increasing at a package boundary. | `aaa-code-review` runs a bounded challenge and can return `STOP_AND_REFRAME`. |
+| `trivial-edit` | A small complete edit has no material architecture expansion. | The phase-bound review does not become continuous process overhead. |
+| `concurrent-work` | Unrelated dirty changes exist while two writers could touch one shared manifest. | Existing work is preserved, writer paths are disjoint, competing shared-artifact writes are serialized, and the integrated state is reverified. |
+| `self-review-boundary` | The author runs the review on its own diff. | The result is labeled self-review and does not grant release or autonomy. |
+| `security-release-boundary` | The request requires full correctness, security, or release judgment. | AAA review preserves its boundary and does not impersonate the owning audit. |
+
+`unrelated-doc-summary` is the negative invocation control. Neither AAA Code
+skill should be selected for an unrelated summarization request. All eight
+neutral prompts live under `evals/`; they do not name the product or either
+skill. Invocation counts only when the host exposes a selection event.
 
 Add a durable doctrine rule only after observed or repeated failure. Add the
 smallest correction and a behavioral case that would expose the failure.
 
 ## Release boundary
 
-Version `0.2.0` publishes source and GitHub installation paths only. It does not
-publish npm/PyPI packages, websites, telemetry, benchmark claims, or a global
-installation. Those require separate evidence and authority.
+Version `0.2.1` publishes source, GitHub installation paths, a host-neutral eval
+suite, and a versioned release receipt. It does not publish npm/PyPI packages,
+websites, telemetry, benchmark claims, universal trigger reliability, or a
+global installation. Those require separate evidence and authority.

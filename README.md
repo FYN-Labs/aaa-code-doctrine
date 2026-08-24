@@ -2,19 +2,35 @@
 
 **Aligned. Autonomous. Auditable.**
 
-AAA Code is a FYN Labs doctrine for agent-written software. It pushes Codex,
-Claude Code, Hermes Agent, and other skill-aware agents toward the smallest
-complete change at the correct native owner — without weakening security,
-validation, accessibility, or required verification.
+## Stop small fixes from becoming second systems.
 
-It is two skills and no runtime:
+AAA Code is the open-source, no-runtime doctrine for keeping agent-written
+software on the smallest complete path at the correct native owner. It gives
+Codex, Claude Code, Hermes Agent, and other skill-aware agents one hard
+default:
+
+**One owner. One complete path. No unnecessary machinery.**
+
+Before an agent creates a wrapper, manager, store, queue, cache, validator,
+broker, plugin, hook, dependency, background job, or state machine, AAA Code
+requires it to first disprove deletion, reuse, native capability, and the
+already-installed stack.
+
+At material phase and package boundaries, a separate read-only review asks
+whether the work still solves the original problem — or has started building
+around the solution.
+
+## Two skills. Zero runtime.
 
 - `aaa-code` guides implementation, debugging, tests, and refactoring.
-- `aaa-code-review` runs a bounded simplicity challenge at a material phase or
-  package gate.
+- `aaa-code-review` runs a bounded simplicity challenge when scope, code,
+  owners, state, or repair loops grow.
 
-There are no lifecycle hooks, daemons, background calls, MCP servers, approval
-stores, telemetry, or persistent modes.
+No lifecycle hooks. No daemon. No background calls. No MCP server. No
+telemetry. No approval store. No persistent mode.
+
+AAA Code changes how an agent approaches the work without becoming another
+system you have to operate.
 
 ## The ladder
 
@@ -55,8 +71,8 @@ Hermes already owns skill installation, so AAA Code uses that native surface
 instead of adding a Python plugin:
 
 ```bash
-hermes skills install https://raw.githubusercontent.com/FYN-Labs/aaa-code-doctrine/v0.2.0/plugins/aaa-code/skills/aaa-code/SKILL.md --yes
-hermes skills install https://raw.githubusercontent.com/FYN-Labs/aaa-code-doctrine/v0.2.0/plugins/aaa-code/skills/aaa-code-review/SKILL.md --yes
+hermes skills install https://raw.githubusercontent.com/FYN-Labs/aaa-code-doctrine/v0.2.1/plugins/aaa-code/skills/aaa-code/SKILL.md --yes
+hermes skills install https://raw.githubusercontent.com/FYN-Labs/aaa-code-doctrine/v0.2.1/plugins/aaa-code/skills/aaa-code-review/SKILL.md --yes
 ```
 
 ### Other skill-aware agents
@@ -101,7 +117,13 @@ Do not add credentials, private customer data, personal files, raw chats, local
 machine paths, or private operating records. Extract the reusable principle and
 keep private context in its owning workspace.
 
-## Development and verification
+## Proof, not promises
+
+A green check counts only for the boundary it actually exercised. AAA Code
+separates source, unit, integration, runtime, package, and release evidence
+from plugin schema, install, discovery, invocation, and behavior evidence. A
+static package PASS is never presented as agent behavior, and self-review never
+becomes independent approval.
 
 ```bash
 npm test
@@ -119,9 +141,17 @@ two separate dimensions: the code-execution layer actually exercised and the
 plugin acceptance stage actually reached. Their canonical definitions are in
 [the product contract](docs/product-contract.md#evidence-contract).
 
-Each release record names the host version, date, dimensions actually
-exercised, commands, and residual gaps. A lower stage never implies a higher
-one.
+The public [`evals/`](evals/) suite contains the seven behavioral contract
+cases plus an unrelated-work negative control. Hosts with a traceable skill
+event can run those neutral prompts without naming either skill. A doctrine-
+conforming answer without a recorded selection event is behavior evidence, not
+invocation evidence.
+
+Exact maintainer gates and receipt rules live in
+[the release playbook](docs/releasing.md). Each release record names the frozen
+subject, host version, date, dimensions actually exercised, commands, and
+residual gaps. A lower stage never implies a higher one. See the current
+[v0.2.1 evidence record](evidence/releases/v0.2.1.json).
 
 ## Provenance
 

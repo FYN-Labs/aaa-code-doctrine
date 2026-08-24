@@ -1,0 +1,137 @@
+{
+  "schema": "aaa-code-release-evidence/v1",
+  "release": "0.2.1",
+  "captured_at": "2026-08-24T16:22:41Z",
+  "frozen_ref": "v0.2.1",
+  "subject": {
+    "files": [
+      {
+        "path": "package.json",
+        "sha256": "7cfd32d078986c392fe797921c9a79f99a3a948e246560ac97a1a054e4798d8d"
+      },
+      {
+        "path": ".agents/plugins/marketplace.json",
+        "sha256": "2e89cb7885267c5d7f7121443c0f41efcab82a7d9a8a4f014913da8b1b09b4c9"
+      },
+      {
+        "path": ".claude-plugin/marketplace.json",
+        "sha256": "4897ee1c42007f2dbc9e1ee1d53a0b89740a6485e5487187d91e419358522472"
+      },
+      {
+        "path": "plugins/aaa-code/.codex-plugin/plugin.json",
+        "sha256": "801f8e2ba1dc5d908ac42c7e123201513ab80adcdadbbe9c8ea71011feaee080"
+      },
+      {
+        "path": "plugins/aaa-code/.claude-plugin/plugin.json",
+        "sha256": "abdf85d155cd3effc2003248cfd35fd76e48a273d2d2f5d43c94d672b8aa4574"
+      },
+      {
+        "path": "plugins/aaa-code/skills/aaa-code/SKILL.md",
+        "sha256": "780345920cc0de6521903a582de0ae21f7e589d0642862790e2fd7fadeb93487"
+      },
+      {
+        "path": "plugins/aaa-code/skills/aaa-code/agents/openai.yaml",
+        "sha256": "97b6b2113dde382d8c3f55cd4fd7453fcb287a1cbbe9508803198b54c6ca4148"
+      },
+      {
+        "path": "plugins/aaa-code/skills/aaa-code-review/SKILL.md",
+        "sha256": "3fdca03a25d89480d1d60be17b3b746f89b3a15d783cfa5a079081caaa8d3891"
+      },
+      {
+        "path": "plugins/aaa-code/skills/aaa-code-review/agents/openai.yaml",
+        "sha256": "91d08ba7bd12889b933c88a0f1754fe81b94198841e3ca2ac03151a4722f7001"
+      }
+    ]
+  },
+  "gates": [
+    {
+      "id": "package-contract-local",
+      "host": "node",
+      "host_version": "24.13.0",
+      "command": "npm test",
+      "status": "PASS",
+      "execution_layer": "package",
+      "acceptance_stages": ["schema/topology"]
+    },
+    {
+      "id": "agent-skills-validators",
+      "host": "python",
+      "host_version": "PyYAML 6.0.3 via uv 0.10.12",
+      "command": "uv run --with PyYAML==6.0.3 quick_validate.py <skill>",
+      "status": "PASS",
+      "execution_layer": "source",
+      "acceptance_stages": ["schema/topology"]
+    },
+    {
+      "id": "codex-plugin-validator",
+      "host": "codex",
+      "host_version": "bundled validator",
+      "command": "uv run --with PyYAML==6.0.3 validate_plugin.py plugins/aaa-code",
+      "status": "PASS",
+      "execution_layer": "package",
+      "acceptance_stages": ["schema/topology"]
+    },
+    {
+      "id": "claude-strict-manifests",
+      "host": "claude-code",
+      "host_version": "2.1.210",
+      "command": "claude plugin validate --strict <plugin-or-marketplace>",
+      "status": "PASS",
+      "execution_layer": "package",
+      "acceptance_stages": ["schema/topology"]
+    },
+    {
+      "id": "claude-native-plugin-eval",
+      "host": "claude-code",
+      "host_version": "2.1.210",
+      "command": "claude plugin eval . --ablation with-without --runs 1 --threshold 1",
+      "status": "UNVERIFIED",
+      "execution_layer": "runtime",
+      "acceptance_stages": ["discovery", "invocation", "behavior"],
+      "residual": "The local CLI reports the plugin-eval surface as early access; no selection receipt is claimed."
+    },
+    {
+      "id": "codex-implicit-trigger-matrix",
+      "host": "codex",
+      "host_version": "0.134.0",
+      "command": "host-native eval using the neutral trigger matrix",
+      "status": "BLOCKED",
+      "execution_layer": "runtime",
+      "acceptance_stages": ["invocation", "behavior"],
+      "residual": "The installed CLI cannot load its current local configuration; no trigger claim is carried forward."
+    },
+    {
+      "id": "hermes-implicit-trigger-matrix",
+      "host": "hermes-agent",
+      "host_version": "0.20.0",
+      "command": "host-native eval using the neutral trigger matrix",
+      "status": "UNVERIFIED",
+      "execution_layer": "runtime",
+      "acceptance_stages": ["invocation", "behavior"],
+      "residual": "No host selection event was captured for this candidate."
+    }
+  ],
+  "behavioral_cases": [
+    { "case_id": "existing-owner", "status": "SPECIFIED" },
+    { "case_id": "capability-gap", "status": "SPECIFIED" },
+    { "case_id": "growing-architecture", "status": "SPECIFIED" },
+    { "case_id": "trivial-edit", "status": "SPECIFIED" },
+    { "case_id": "concurrent-work", "status": "SPECIFIED" },
+    { "case_id": "self-review-boundary", "status": "SPECIFIED" },
+    { "case_id": "security-release-boundary", "status": "SPECIFIED" },
+    { "case_id": "unrelated-doc-summary", "status": "SPECIFIED" }
+  ],
+  "claims": [
+    "two instruction-only skills",
+    "no plugin runtime, hooks, daemon, telemetry, MCP server, or persistent state",
+    "versioned neutral behavioral eval suite",
+    "claim-matched static release receipt"
+  ],
+  "not_claimed": [
+    "universal automatic trigger reliability",
+    "measured code-quality improvement",
+    "security or release certification",
+    "compatibility with every coding agent",
+    "npm or PyPI publication"
+  ]
+}

@@ -1,0 +1,34 @@
+schema_version: "1.1"
+name: existing-owner
+description: Reuse an established owner instead of creating a parallel subsystem.
+tags: [aaa-code, invocation, behavior]
+plugins:
+  - ../../plugins/aaa-code
+execution:
+  prompt: |
+    A TypeScript export service already has a ReceiptWriter and formatter
+    registry. Add CSV receipts. A proposal introduces CsvManager, ExportQueue,
+    and ReceiptStore. Return the smallest implementation plan and the checks
+    needed before accepting it.
+  max_turns: 4
+  timeout_seconds: 180
+  allowed_tools: [Skill]
+runs: 1
+graders:
+  - type: tool_used
+    name: implementation-skill-selected
+    tool: Skill
+    input_match: aaa-code
+    min: 1
+    weight: 1
+    arm: with-only
+  - type: llm
+    name: reuses-native-owner
+    criteria: |
+      The answer extends the existing writer and formatter registry, rejects
+      the unnecessary manager, queue, and store, and asks for proof through the
+      real success path plus a relevant failure path.
+    focus: last_message
+    weight: 2
+    arm: with-only
+expected_outcome: The established owner is extended and parallel machinery is rejected.
