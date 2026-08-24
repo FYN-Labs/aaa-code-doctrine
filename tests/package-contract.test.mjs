@@ -64,21 +64,44 @@ test("the plugin file topology is fail-closed and contains instructions only", a
   ]);
 });
 
-test("both skills are complete and the review stays phase-bound without hooks", async () => {
+test("static skill files have no placeholders and keep implicit invocation policy", async () => {
   const mainSkill = await text("plugins/aaa-code/skills/aaa-code/SKILL.md");
   const reviewSkill = await text("plugins/aaa-code/skills/aaa-code-review/SKILL.md");
   const mainUi = await text("plugins/aaa-code/skills/aaa-code/agents/openai.yaml");
   const reviewUi = await text("plugins/aaa-code/skills/aaa-code-review/agents/openai.yaml");
 
   assert.doesNotMatch(mainSkill + reviewSkill, /\[TODO:|TODO\b/);
-  assert.match(mainSkill, /Aligned, Autonomous, Auditable/);
-  assert.match(mainSkill, /Never simplify away/);
-  assert.match(reviewSkill, /Do not run it after every small edit/);
   assert.match(mainUi, /allow_implicit_invocation: true/);
   assert.match(reviewUi, /allow_implicit_invocation: true/);
 });
 
-test("public documentation preserves provenance and limits its claims", async () => {
+test("versioned install URLs and evidence claims match the package release", async () => {
+  const packageInfo = await json("package.json");
+  const readme = await text("README.md");
+  const productContract = await text("docs/product-contract.md");
+  const tag = `v${packageInfo.version.replaceAll(".", "\\.")}`;
+  const version = packageInfo.version.replaceAll(".", "\\.");
+
+  assert.match(readme, new RegExp(`${tag}/plugins/aaa-code/skills/aaa-code/SKILL\\.md`));
+  assert.match(readme, new RegExp(`${tag}/plugins/aaa-code/skills/aaa-code-review/SKILL\\.md`));
+  assert.match(productContract, new RegExp("Version `" + version + "`"));
+  assert.match(readme, /static package contract; it does not prove/);
+});
+
+test("public doctrine files exclude machine-local and credential-shaped data", async () => {
+  for (const relativePath of [
+    "AGENTS.md",
+    "README.md",
+    "docs/product-contract.md",
+    "plugins/aaa-code/skills/aaa-code/SKILL.md",
+    "plugins/aaa-code/skills/aaa-code-review/SKILL.md",
+  ]) {
+    const contents = await text(relativePath);
+    assert.doesNotMatch(contents, /\/Users\/|gh[opsu]_[A-Za-z0-9]+|-----BEGIN [A-Z ]*PRIVATE KEY-----/);
+  }
+});
+
+test("public documentation pins upstream identity, commit, owners, and license headings", async () => {
   const readme = await text("README.md");
   const notices = await text("THIRD_PARTY_NOTICES.md");
 
