@@ -7,6 +7,10 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const pluginRoot = path.join(root, "plugins", "aaa-code");
 
+// Word budgets keep the skills readable in full by any model. A sentence that
+// does not fit has to displace one; see AGENTS.md.
+const WORD_BUDGET = { "aaa-code": 800, "aaa-code-review": 650 };
+
 async function json(relativePath) {
   return JSON.parse(await readFile(path.join(root, relativePath), "utf8"));
 }
@@ -24,6 +28,16 @@ async function filesUnder(directory) {
     else files.push(absolute);
   }
   return files;
+}
+
+function skillBody(skill) {
+  const match = skill.match(/^---\n[\s\S]*?\n---\n([\s\S]*)$/);
+  assert.ok(match, "SKILL.md must start with YAML front matter");
+  return match[1];
+}
+
+function wordCount(value) {
+  return value.trim().split(/\s+/).filter(Boolean).length;
 }
 
 test("all host manifests point to the same dependency-free skill package", async () => {
@@ -64,20 +78,33 @@ test("the plugin file topology is fail-closed and contains instructions only", a
   ]);
 });
 
-test("static skill files have no placeholders and keep implicit invocation policy", async () => {
+test("AAA-CODE.md owns the core and the implementation skill and README carry it verbatim", async () => {
+  const core = (await text("AAA-CODE.md")).trim();
+  const mainSkill = await text("plugins/aaa-code/skills/aaa-code/SKILL.md");
+  const readme = await text("README.md");
+
+  assert.ok(core.length > 0);
+  assert.equal(core.split("\n").filter((line) => /^\d+\. /.test(line)).length, 11, "the core is eleven numbered lines");
+  assert.ok(mainSkill.includes(core), "aaa-code/SKILL.md must contain AAA-CODE.md verbatim");
+  assert.ok(readme.includes(core), "README.md must contain AAA-CODE.md verbatim");
+});
+
+test("skills stay inside their word budget, name no model, and keep implicit invocation policy", async () => {
+  const core = await text("AAA-CODE.md");
   const mainSkill = await text("plugins/aaa-code/skills/aaa-code/SKILL.md");
   const reviewSkill = await text("plugins/aaa-code/skills/aaa-code-review/SKILL.md");
   const mainUi = await text("plugins/aaa-code/skills/aaa-code/agents/openai.yaml");
   const reviewUi = await text("plugins/aaa-code/skills/aaa-code-review/agents/openai.yaml");
 
-  assert.doesNotMatch(mainSkill + reviewSkill, /\[TODO:|TODO\b/);
+  assert.ok(wordCount(skillBody(mainSkill)) <= WORD_BUDGET["aaa-code"], `aaa-code body exceeds ${WORD_BUDGET["aaa-code"]} words`);
+  assert.ok(wordCount(skillBody(reviewSkill)) <= WORD_BUDGET["aaa-code-review"], `aaa-code-review body exceeds ${WORD_BUDGET["aaa-code-review"]} words`);
+  assert.doesNotMatch(core + mainSkill + reviewSkill, /\[TODO:|TODO\b/);
+  assert.doesNotMatch(core + mainSkill + reviewSkill, /\b(?:Opus|Sonnet|Haiku|Kimi|GLM|GPT|Gemini|Claude|OpenAI|Anthropic)\b/);
   assert.match(mainUi, /allow_implicit_invocation: true/);
   assert.match(reviewUi, /allow_implicit_invocation: true/);
-  assert.match(reviewSkill, /at least two additional reviewer arms/);
-  assert.doesNotMatch(reviewSkill, /\b(?:Opus|Kimi|GLM|GPT|Claude)\b/);
 });
 
-test("versioned install URLs and evidence claims match the package release", async () => {
+test("versioned install URLs and the product contract match the package release", async () => {
   const packageInfo = await json("package.json");
   const readme = await text("README.md");
   const productContract = await text("docs/product-contract.md");
@@ -87,12 +114,12 @@ test("versioned install URLs and evidence claims match the package release", asy
   assert.match(readme, new RegExp(`${tag}/plugins/aaa-code/skills/aaa-code/SKILL\\.md`));
   assert.match(readme, new RegExp(`${tag}/plugins/aaa-code/skills/aaa-code-review/SKILL\\.md`));
   assert.match(productContract, new RegExp("Version `" + version + "`"));
-  assert.match(readme, /static package contract; it does not prove/);
 });
 
 test("published product artifacts exclude machine-local and credential-shaped data", async () => {
   const relativeFiles = [
     ".gitignore",
+    "AAA-CODE.md",
     "AGENTS.md",
     "LICENSE",
     "README.md",
@@ -107,6 +134,7 @@ test("published product artifacts exclude machine-local and credential-shaped da
     "evals",
     "evidence",
     "plugins",
+    "tests",
   ]) {
     for (const absolute of await filesUnder(path.join(root, directory))) {
       relativeFiles.push(path.relative(root, absolute).split(path.sep).join("/"));
@@ -115,7 +143,7 @@ test("published product artifacts exclude machine-local and credential-shaped da
 
   for (const relativePath of relativeFiles) {
     const contents = await text(relativePath);
-    assert.doesNotMatch(contents, /\/Users\/|gh[opsu]_[A-Za-z0-9]+|-----BEGIN [A-Z ]*PRIVATE KEY-----|\bCompany\.OS\b|\bMAT-\d+\b/);
+    assert.doesNotMatch(contents, /\/Users\/|\/home\/[a-z]+\/|gh[opsu]_[A-Za-z0-9]{8,}|sk-[A-Za-z0-9]{16,}|-----BEGIN [A-Z ]*PRIVATE KEY-----/, relativePath);
   }
 });
 
@@ -124,7 +152,6 @@ test("public documentation pins upstream identity, commit, owners, and license h
   const notices = await text("THIRD_PARTY_NOTICES.md");
 
   assert.match(readme, /FYN Labs/);
-  assert.match(readme, /Upstream benchmark results are not presented as FYN Labs results/);
   for (const upstream of [
     {
       url: "https://github.com/DietrichGebert/ponytail",

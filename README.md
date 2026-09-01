@@ -4,46 +4,44 @@
 
 ## Stop small fixes from becoming second systems.
 
-AAA Code is the open-source, no-runtime doctrine for keeping agent-written
-software on the smallest complete path at the correct native owner. It gives
-Codex, Claude Code, Hermes Agent, and other skill-aware agents one hard
-default:
+AAA Code is a no-runtime doctrine for keeping agent-written software on the
+smallest complete path at its existing owner. It gives Codex, Claude Code,
+Hermes Agent, and any other skill-aware agent one hard default:
 
-**One owner. One complete path. No unnecessary machinery.**
+**One owner. One complete path. No mechanism the requested behavior does not need.**
 
-Before an agent creates a wrapper, manager, store, queue, cache, validator,
-broker, plugin, hook, dependency, background job, or state machine, AAA Code
-requires it to first disprove deletion, reuse, native capability, and the
-already-installed stack.
+The whole doctrine is the eleven lines in [`AAA-CODE.md`](AAA-CODE.md).
+Everything else in this repository is packaging, verification, or process.
 
-At material phase and package boundaries, a separate read-only review asks
-whether the work still solves the original problem — or has started building
-around the solution.
+## The core
 
-## Two skills. Zero runtime.
+**One owner. One complete path. No mechanism the requested behavior does not need.**
 
-- `aaa-code` guides implementation, debugging, tests, and refactoring.
-- `aaa-code-review` runs a bounded simplicity challenge when scope, code,
-  owners, state, or repair loops grow.
+1. Write the problem in one sentence. Solve that sentence, nothing wider.
+2. The owner of a behavior is the one unit that already changes for that reason. Change it there, even when inconvenient. If the framework or configuration already does it, the framework is the owner.
+3. Before creating anything, stop at the first rung that fully solves the sentence: does it need to exist? can the owner be extended? can the framework or configuration do it? can the standard library or an installed dependency do it? can a deletion or one targeted change do it? Only then build, at the owner.
+4. Do not add a helper, wrapper, manager, store, queue, cache, adapter, hook, dependency, background job, or state machine to avoid touching the owner.
+5. Complete means: reachable from the real entry point, every existing caller still works, the first failure a user would hit is handled, and you ran it at least once. Smaller than complete is not simpler; it is unfinished.
+6. Never make something smaller by removing authentication, authorization, validation at a trust boundary, error handling, data-loss protection, or a required test.
+7. Prove the change through its real entry point: the success path and one failure path. Name the command you ran, the layer it covers (static, unit, integrated, release), and what is still unverified.
+8. A change is material when it adds or removes an owner, a dependency, persistent state, or a cross-component path, or touches authentication, money, data loss, or rollback. Everything else is trivial: verify it and move on.
+9. At a material boundary, stop before the next expansion and ask whether you are still solving the sentence from line 1, and what can disappear. Not after every small edit.
+10. Research is not permission. Never install, buy, push, publish, or send data outside the repository without an explicit grant.
+11. Report: owner reused, mechanism avoided, files changed, check run, still unverified.
+
+## Three ways to load it
+
+1. **Always on, any harness.** Paste `AAA-CODE.md` under a heading such as
+   `## AAA Code` into `AGENTS.md`, `CLAUDE.md`, your Hermes rules file, or the
+   system prompt. This is the only path every host loads unconditionally.
+2. **As skills.** `aaa-code` carries the same core plus the safety floor, an
+   example, a work loop, and a completion report. `aaa-code-review` is a
+   read-only overengineering review for material boundaries. Skill selection
+   is a per-host heuristic; do not rely on it alone.
+3. **Both.** The core in the rules file, the review as a skill.
 
 No lifecycle hooks. No daemon. No background calls. No MCP server. No
 telemetry. No approval store. No persistent mode.
-
-AAA Code changes how an agent approaches the work without becoming another
-system you have to operate.
-
-## The ladder
-
-Before creating code, check in order:
-
-1. Does it need to exist?
-2. Can the existing owner be reused or repaired?
-3. Can the native framework, runtime, agent, platform, or configuration do it?
-4. Can the standard library or an installed dependency do it?
-5. Can deletion or one targeted change solve it?
-6. Can a vetted, maintained upstream, skill, or tool close a proven gap with
-   less ownership than custom code?
-7. Otherwise, build the smallest complete path and prove it.
 
 ## Install
 
@@ -71,8 +69,8 @@ Hermes already owns skill installation, so AAA Code uses that native surface
 instead of adding a Python plugin:
 
 ```bash
-hermes skills install https://raw.githubusercontent.com/FYN-Labs/aaa-code-doctrine/v0.3.0/plugins/aaa-code/skills/aaa-code/SKILL.md --yes
-hermes skills install https://raw.githubusercontent.com/FYN-Labs/aaa-code-doctrine/v0.3.0/plugins/aaa-code/skills/aaa-code-review/SKILL.md --yes
+hermes skills install https://raw.githubusercontent.com/FYN-Labs/aaa-code-doctrine/v0.4.0/plugins/aaa-code/skills/aaa-code/SKILL.md --yes
+hermes skills install https://raw.githubusercontent.com/FYN-Labs/aaa-code-doctrine/v0.4.0/plugins/aaa-code/skills/aaa-code-review/SKILL.md --yes
 ```
 
 ### Other skill-aware agents
@@ -83,96 +81,57 @@ dependency.
 
 ## Use
 
-Ordinary coding work can select `aaa-code` automatically. At a material phase
-or package boundary, the narrow review description lets an agent select
-`aaa-code-review`; invoke it directly when you want the check immediately:
+Ordinary coding work can select `aaa-code` automatically. Ask for
+`aaa-code-review` when a change looks overengineered, when owners, files,
+state, or repair loops keep growing, or before a merge or package gate. Use
+whatever your host uses to invoke a skill: `$aaa-code-review` in Codex,
+`/aaa-code-review` in Claude Code, or ask Hermes to load it.
 
-```text
-Use $aaa-code to implement this at the smallest native owner.
-Use $aaa-code-review at this package gate.
-```
-
-The review is intentionally not always-on. Growing scope, production code,
-owners, state, or repair loops is the signal to stop and challenge the design.
-
-## The Zange at material gates
-
-Ordinary reviews stay single-reviewer. At a material architecture,
-inference-routing, eval, CAO, or audit gate, the primary agent must be challenged
-by at least two additional blind, read-only reviewer arms. The primary and both
-arms must resolve to three distinct model families from distinct model
-developers against the same frozen subject.
-
-Each arm reports independently before either sees the other's findings. The
-integrator preserves disagreements instead of averaging them. Missing,
-same-family, silently rerouted, incomplete, or identity-unverified arms leave
-the gate `BLOCKED_ASSURANCE` or `UNVERIFIED`, never PASS.
-
-Model names are deliberately not part of the durable contract. A project may
-currently qualify reviewers such as Opus 5, Kimi K3, GLM 5.3, or another
-frontier model, but configured names and public benchmarks do not count. The
-actual resolved identity, family, qualification evidence, completion, and
-individual verdict do.
+The review is intentionally not always-on. Growing scope, owners, state, or
+repair loops is the signal to stop and challenge the design; a trivial edit is
+not.
 
 ## What AAA Code does not claim
 
-- It is not a replacement for correctness, security, performance, or release
-  review.
-- It is agent guidance, not deterministic enforcement. Authentication,
-  authorization, safety, and release invariants remain in the repository's CI
-  and host policy.
-- Fewer lines are not automatically better; one complete owner is better.
-- It does not grant authority to publish, spend, deploy, access credentials,
-  or weaken project rules.
-- Research does not authorize installing a dependency or tool, accepting a
-  license, spending money, or transferring private context.
-- Self-review is evidence, not independent approval or future autonomy.
-- AAA Code does not provision, route, purchase, or authorize reviewer models;
-  the owning host supplies already-authorized lanes.
-- Upstream benchmark results are not presented as FYN Labs results. Product
-  claims require an independently reproducible AAA Code benchmark.
-
-## Public contribution boundary
-
-Do not add credentials, private customer data, personal files, raw chats, local
-machine paths, or private operating records. Extract the reusable principle and
-keep private context in its owning workspace.
+- It is not a correctness, security, performance, accessibility, or release
+  review. Those gates stay where they are.
+- It is guidance, not enforcement. It grants no authority to install, spend,
+  publish, deploy, merge, or weaken project rules, and self-review never
+  becomes independent approval.
+- Fewer lines are not the goal. One complete owner is.
 
 ## Proof, not promises
-
-A green check counts only for the boundary it actually exercised. AAA Code
-separates source, unit, integration, runtime, package, and release evidence
-from plugin schema, install, discovery, invocation, and behavior evidence. A
-static package PASS is never presented as agent behavior, and self-review never
-becomes independent approval.
 
 ```bash
 npm test
 ```
 
 That is the dependency-free clean-clone gate and the command CI runs with
-Node.js 22. Before a version tag, maintainers additionally run the current
-bundled Codex plugin validator, the Agent Skills validator for both skills, and
-`claude plugin validate --strict`; those host tools are release prerequisites,
-not vendored project dependencies.
+Node.js 22. It proves the package is what it says: two instruction-only skills
+that carry the core verbatim, no hooks, no executable code, versions aligned,
+no private data, word budgets kept. It does not prove that an agent selects or
+follows the skill.
 
-`npm test` proves the static package contract; it does not prove that an agent
-selects the right skill or makes the right decision. Release evidence reports
-two separate dimensions: the code-execution layer actually exercised and the
-plugin acceptance stage actually reached. Their canonical definitions are in
-[the product contract](docs/product-contract.md#evidence-contract).
+What ran and what did not run for each version is in
+[`docs/evidence.md`](docs/evidence.md); the terms are in
+[the product contract](docs/product-contract.md). Maintainer release gates and
+the trigger matrix are in [the release playbook](docs/releasing.md).
 
-The public neutral prompt corpus under [`evals/`](evals/) contains ten
-behavioral and negative-control cases, encoded as Claude-compatible static case
-files. Other hosts can run the same prompt text when they expose a traceable
-skill event. A doctrine-conforming answer without a recorded selection event
-is behavior evidence, not invocation evidence.
+The eight neutral prompts under [`evals/`](evals/) are behavioral and
+negative-control cases encoded as Claude-compatible static case files. Other
+hosts can run the same prompt text when they expose a traceable skill event.
+A doctrine-conforming answer without a recorded selection event is behavior
+evidence, not invocation evidence.
 
-Exact maintainer gates and receipt rules live in
-[the release playbook](docs/releasing.md). Each release record names the frozen
-subject, host version, date, dimensions actually exercised, commands, and
-residual gaps. A lower stage never implies a higher one. See the current
-[v0.3.0 evidence record](evidence/releases/v0.3.0.json).
+A draft contract for a multi-reviewer assurance gate, never executed, lives in
+[`docs/assurance-gate.md`](docs/assurance-gate.md). It is not part of either
+skill.
+
+## Public contribution boundary
+
+Do not add credentials, private customer data, personal files, raw chats, local
+machine paths, or private operating records. Extract the reusable principle and
+keep private context in its owning workspace.
 
 ## Provenance
 
@@ -184,9 +143,11 @@ projects:
 - [clean-code-skills](https://github.com/btseee/clean-code-skills), pinned at
   `6df6e6aae7c03317670601eb449fad8aeeccbe30`.
 
-AAA Code differs materially in its phase-bound review, native-owner priority,
-maximum-autonomy boundary, audit evidence, and explicit rejection of persistent
-hook/state machinery. Full notices are in
+AAA Code differs materially in its phase-bound review, owner-first ladder,
+explicit definitions of complete and material, audit evidence, and rejection of
+persistent hook/state machinery. Upstream benchmark results are not presented
+as FYN Labs results; product claims require an independently reproducible AAA
+Code benchmark. Full notices are in
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## License
@@ -197,4 +158,4 @@ MIT © 2026 FYN Labs / Mathias Heinke.
 
 Deutsch: AAA Code hält Agenten-Code am ursprünglichen Problem, am kleinsten
 nativen Owner und an realer Verifikation. Der Simplicity-Check läuft an sicheren
-Phasengrenzen — nicht nach jedem Dreizeiler.
+Phasengrenzen, nicht nach jedem Dreizeiler.

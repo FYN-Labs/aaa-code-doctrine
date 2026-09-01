@@ -5,8 +5,10 @@ claim the evidence stages it actually reached.
 
 ## 1. Freeze the candidate
 
-Work from a clean `codex/` branch based on `origin/main`. Record the reviewed
-head SHA before merge and do not reuse a PASS after a material diff.
+Work from a clean branch based on `origin/main`. Record the reviewed head SHA
+before merge and do not reuse a PASS after a material diff. The commit body of
+every doctrine change names the eval case or observed failure that motivated
+it.
 
 ```bash
 git status --short --branch
@@ -15,8 +17,10 @@ npm test
 ```
 
 `npm test` is the dependency-free clean-clone contract. It validates package
-topology, version alignment, public-data hygiene, eval fixtures, and release
-receipt consistency. It does not execute an agent.
+topology, version alignment, the core carried verbatim by the implementation
+skill and README, word budgets, public-data hygiene, eval fixture shape, and
+the evidence statement for the current version. It does not execute an agent
+and does not assert prose.
 
 ## 2. Validate the skills and manifests
 
@@ -43,7 +47,7 @@ claude plugin validate --strict plugins/aaa-code
 claude plugin validate --strict .claude-plugin/marketplace.json
 ```
 
-Record validator versions and exact results in the release receipt. A missing
+Record validator versions and exact results in `docs/evidence.md`. A missing
 validator is a gap, not a carried-forward PASS.
 
 ## 3. Run behavioral evals where the host exposes evidence
@@ -77,17 +81,9 @@ The minimum cross-host trigger matrix is:
 | `trivial-edit` | no `aaa-code-review`; `aaa-code` is allowed |
 | `unrelated-doc-summary` | neither skill |
 
-The other six cases test decision quality, authority boundaries, and
-adversarial-assurance integrity.
-
-For a required adversarial-assurance gate, record the frozen subject, challenge
-prompt digest, primary identity, and both additional reviewer arms. Each arm
-records configured route, actually resolved model, model family and developer,
-execution host, relationship, dated decision-class qualification reference,
-completion evidence, verdict, and report digest. Record whether both arms
-remained blind until completion and how every material disagreement was
-resolved. Configured aliases, consensus, or a shared gateway are not identity,
-qualification, or diversity evidence.
+The other four cases test decision quality and authority boundaries. The two
+draft cases under `docs/assurance-gate/evals/` belong to the assurance-gate
+draft and are not release gates.
 
 ## 4. Merge and tag the exact candidate
 
@@ -143,11 +139,9 @@ gh release create VERSION \
 
 ## Evidence rule
 
-The versioned JSON record under `evidence/releases/` binds claims to product
-file digests and lists PASS, BLOCKED, and UNVERIFIED gates separately. Never
-store credentials, auth files, account identifiers, raw private context,
+Each version gets one section in `docs/evidence.md` that says what ran, on
+which host and version, and what did not run. A lower stage never implies a
+higher one. The tag-bound JSON receipts under `evidence/releases/` are the
+historical records of v0.2.1 and v0.3.0 and are not continued. Never store
+credentials, auth files, account identifiers, raw private context,
 machine-local paths, or unsanitized debug traces in the repository.
-
-An assurance contract in a receipt is specification evidence until two valid
-cross-family arm reports actually exist. Static tests must never promote it to
-an executed assurance PASS.

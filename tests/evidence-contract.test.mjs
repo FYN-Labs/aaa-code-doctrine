@@ -1,5 +1,4 @@
 import assert from "node:assert/strict";
-import { createHash } from "node:crypto";
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
@@ -7,8 +6,6 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const expectedCases = [
-  "adversarial-assurance-gate",
-  "assurance-family-collapse",
   "capability-gap",
   "concurrent-work",
   "existing-owner",
@@ -19,16 +16,8 @@ const expectedCases = [
   "unrelated-doc-summary",
 ];
 
-async function bytes(relativePath) {
-  return readFile(path.join(root, relativePath));
-}
-
 async function text(relativePath) {
   return readFile(path.join(root, relativePath), "utf8");
-}
-
-function sha256(value) {
-  return createHash("sha256").update(value).digest("hex");
 }
 
 function promptFrom(caseYaml) {
@@ -58,55 +47,34 @@ test("the public eval suite covers every contract case and negative control", as
   }
 });
 
-test("the release receipt binds claims to the current product bytes", async () => {
+test("implementation cases that expect aaa-code also exclude aaa-code-review", async () => {
+  for (const caseId of ["existing-owner", "capability-gap", "concurrent-work"]) {
+    const caseYaml = await text(`evals/${caseId}/case.yaml`);
+    assert.match(caseYaml, /name: review-skill-not-selected\n\s+tool: Skill\n\s+input_match: aaa-code-review\n\s+min: 0\n\s+max: 0/, caseId);
+  }
+});
+
+test("the evidence statement covers the current version and says what did not run", async () => {
   const packageInfo = JSON.parse(await text("package.json"));
-  const receipt = JSON.parse(await text(`evidence/releases/v${packageInfo.version}.json`));
+  const evidence = await text("docs/evidence.md");
+  const version = packageInfo.version.replaceAll(".", "\\.");
+  const section = evidence.match(new RegExp(`^## v${version}\\b[\\s\\S]*?(?=^## |(?![\\s\\S]))`, "m"));
 
-  assert.equal(receipt.schema, "aaa-code-release-evidence/v1");
-  assert.equal(receipt.release, packageInfo.version);
-  assert.equal(receipt.frozen_ref, `v${packageInfo.version}`);
-  assert.equal(receipt.assurance_contract.minimum_additional_reviewer_arms, 2);
-  assert.equal(receipt.assurance_contract.distinct_resolved_model_families, 3);
-  assert.equal(receipt.assurance_contract.distinct_model_developers, 3);
-  assert.equal(receipt.assurance_contract.blind_until_both_complete, true);
-  assert.equal(receipt.assurance_contract.same_frozen_subject, true);
-  assert.equal(receipt.assurance_contract.resolved_identity_required, true);
-  assert.equal(receipt.assurance_contract.qualification_reference_required, true);
-  assert.equal(receipt.assurance_contract.disagreement_handling, "preserved");
-  assert.equal(receipt.assurance_contract.authority_granted, "none");
-  assert.deepEqual(receipt.behavioral_cases.map((entry) => entry.case_id).sort(), expectedCases);
-  assert.deepEqual(
-    receipt.subject.files
-      .map((entry) => entry.path)
-      .filter((entry) => entry.startsWith("evals/"))
-      .sort(),
-    expectedCases.map((caseId) => `evals/${caseId}/case.yaml`).sort(),
-  );
+  assert.ok(section, `docs/evidence.md needs a "## v${packageInfo.version}" section`);
+  assert.match(section[0], /npm test/);
+  assert.match(section[0], /[Nn]ot run/);
+});
 
-  for (const subject of receipt.subject.files) {
-    assert.equal(subject.sha256, sha256(await bytes(subject.path)), subject.path);
-  }
-
-  for (const gate of receipt.gates) {
-    assert.match(gate.status, /^(PASS|BLOCKED|UNVERIFIED)$/);
-    if (["agent-skills-validators", "codex-plugin-validator"].includes(gate.id)) {
-      assert.match(gate.validator_sha256, /^[a-f0-9]{64}$/);
-      assert.ok(gate.validator_source);
-    }
-    if (gate.status === "PASS" && gate.acceptance_stages.includes("invocation")) {
-      assert.ok(gate.selection_event, `${gate.id} needs an observable selection event`);
+test("historical release receipts stay bound to their own tags", async () => {
+  const receipts = (await readdir(path.join(root, "evidence", "releases"))).filter((name) => name.endsWith(".json")).sort();
+  assert.ok(receipts.length > 0);
+  for (const name of receipts) {
+    const receipt = JSON.parse(await text(`evidence/releases/${name}`));
+    assert.equal(receipt.schema, "aaa-code-release-evidence/v1");
+    assert.equal(name, `v${receipt.release}.json`);
+    assert.equal(receipt.frozen_ref, `v${receipt.release}`);
+    for (const gate of receipt.gates) {
+      assert.match(gate.status, /^(PASS|BLOCKED|UNVERIFIED)$/);
     }
   }
-
-  const assuranceGate = receipt.gates.find((gate) => gate.id === "adversarial-assurance-runtime");
-  assert.ok(assuranceGate, "receipt needs the adversarial assurance runtime gate");
-  assert.equal(assuranceGate.status, receipt.assurance_contract.execution_status);
-  assert.equal(
-    receipt.not_claimed.includes("executed multi-model assurance for this release"),
-    assuranceGate.status !== "PASS",
-  );
-
-  assert.ok(receipt.not_claimed.includes("universal automatic trigger reliability"));
-  assert.ok(receipt.not_claimed.includes("measured code-quality improvement"));
-  assert.ok(receipt.not_claimed.includes("security or release certification"));
 });
