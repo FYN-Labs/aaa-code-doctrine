@@ -2,33 +2,33 @@
 
 ```yaml
 product_spec:
-  version: 0.3.0
+  version: 0.4.0
   project: AAA Code
   publisher: FYN Labs
   workspace: repository-root
   data_classification: public
   claims_risk: public-copy
   source_of_truth:
+    - AAA-CODE.md
     - plugins/aaa-code/skills/aaa-code/SKILL.md
     - plugins/aaa-code/skills/aaa-code-review/SKILL.md
   explicit_non_goals:
     - Always-on hooks, daemons, telemetry, MCP, persistent modes, or approval stores
-    - Package-registry publication in v0.3.0
+    - Package-registry publication in v0.4.0
     - Replacing correctness, security, performance, accessibility, or release review
     - Deterministic enforcement of authentication, authorization, safety, or release policy
     - Automatic dependency, tool, skill, credential, spend, or publication authority
     - Running, routing, purchasing, or hosting reviewer models
-    - A hard-coded model/provider roster or silent reviewer fallback
-    - Treating model consensus as CAO, correctness, security, or release authority
 ```
 
 ## Outcome
 
 Publish one dependency-free FYN Labs package that gives skill-aware coding
-agents a shared native-first doctrine and a separate phase-bound simplicity
-review. A clean clone must contain everything required to inspect, validate,
-and install the skills for Codex, Claude Code, Hermes Agent, or a generic Agent
-Skills consumer.
+agents one shared doctrine: one owner, one complete path, no mechanism the
+requested behavior does not need. The doctrine is a plain text block any host
+can load; two skills carry it and add a phase-bound simplicity review. A clean
+clone contains everything required to inspect, validate, and install it for
+Codex, Claude Code, Hermes Agent, or a generic Agent Skills consumer.
 
 ## Users
 
@@ -38,124 +38,84 @@ Skills consumer.
 
 ## Architecture
 
-The canonical behavior lives only in two skill files. Codex and Claude Code use
-thin marketplace manifests that point to the same package. Hermes installs the
-same skill files through its native skill manager. No host adapter executes
-code or changes the doctrine.
+`AAA-CODE.md` owns the core. The implementation skill and the README contain
+it verbatim; `npm test` enforces that. Codex and Claude Code use thin
+marketplace manifests that point to the same package. Hermes installs the same
+skill files through its native skill manager. No host adapter executes code or
+changes the doctrine.
 
-Multi-model assurance remains instruction-only. The owning host or project
-supplies already-authorized reviewer lanes; AAA Code supplies no router,
-credentials, provider integration, runtime state, or background execution.
+Skill selection is a per-host heuristic. The only surface every named host
+loads unconditionally is its project rules file, so the README tells users to
+paste the core there.
 
 ## Acceptance
 
-- The implementation skill encodes Aligned, Autonomous, Auditable behavior and
-  the ordered reduction ladder.
-- The review skill is read-only, phase-bound, severity-ranked, and clearly not
-  a full correctness or security audit.
+- `AAA-CODE.md` states the principle, the ladder, the definitions of owner,
+  complete, and material, the safety floor, the proof rule, the authority rule,
+  and the report, in eleven numbered lines.
+- The implementation skill contains the core verbatim, the full safety floor,
+  one example and one counter-example, a work loop, a stop signal, and a
+  completion report, within 800 words.
+- The review skill is read-only, phase-bound, severity-ranked, contains a
+  filled-in verdict, and is clearly not a correctness or security audit, within
+  650 words.
 - Safety, validation, data-loss handling, accessibility, privacy, explicit
   requirements, and risk-proportionate tests cannot be simplified away.
+- Neither skill names a model, vendor, or benchmark, and neither asks a model
+  to report its own resolved identity.
 - All manifests validate with current local host CLIs.
-- Tests enforce the complete plugin file allowlist and reject hooks, MCP,
-  executable plugin code, persistent state, version drift, and missing
-  provenance.
+- Tests enforce the complete plugin file allowlist, version alignment, the word
+  budgets, the verbatim core, and public-data hygiene, and reject hooks, MCP,
+  executable plugin code, and persistent state. They do not assert prose.
 - A clean clone passes dependency-free `npm test`; native host validators are
   additional maintainer release gates, not clean-clone dependencies.
-- The review skill is discoverable only through its narrow material-boundary
-  description and is never injected through an always-on hook or state mode.
-- Material verification exercises the real changed boundary and distinguishes
-  source, unit, integration, runtime, package and release evidence.
-- Dirty or parallel work is preserved through explicit path ownership; no
-  package rule authorizes destructive cleanup.
+- The review skill is discoverable only through its narrow description and is
+  never injected through an always-on hook or state mode.
+- Dirty or parallel work is preserved; no package rule authorizes destructive
+  cleanup.
 - Self-review remains advisory and never grants independent approval, release
-  authority or future autonomy.
-- Ordinary and trivial reviews do not trigger multi-model overhead.
-- Material architecture, inference-routing, eval, CAO, and audit gates require
-  the primary agent plus two additional blind, read-only reviewer arms. The
-  three seats must resolve to distinct underlying model families from distinct
-  model developers against the same frozen subject.
-- All three identities, dated decision-class qualification references, arm
-  completeness, individual verdicts, disagreements, and integrator resolution
-  are reported. Configured aliases do not prove the resolved identity.
-- Same-family sessions, silent fallbacks, failed output, prior-arm exposure, or
-  mismatched frozen subjects invalidate an arm and prevent PASS.
-- Reviewer agreement never grants model access, spend, credentials, data
-  transfer, merge, deploy, publish, release, or future-autonomy authority.
+  authority, or future autonomy.
+- Ordinary and trivial reviews trigger no multi-model overhead. The
+  multi-reviewer assurance contract is a draft outside both skills.
 
-## Evidence contract
+## Evidence
 
-AAA evidence reports two independent dimensions:
+Say what ran, on which host and version, and what did not run. Each version
+has one section in `docs/evidence.md`. The tag-bound JSON receipts under
+`evidence/releases/` are the historical records of v0.2.1 and v0.3.0.
 
-- **Execution layer:** source, unit, integration, runtime, package, or release.
-  This states which product path the check actually exercised.
-- **Plugin acceptance stage:** schema/topology, install, discovery, invocation,
-  behavior, or package/release. This states how far a host compatibility claim
-  was proven.
+Two things are always kept apart:
 
-Plugin acceptance is cumulative only when every named stage was actually
-exercised:
+- **Evidence layer:** static (validators or type checks ran, nothing was
+  executed), unit (the changed unit ran in isolation), integrated (the real
+  entry point ran on the final combined state), release (the artifact that
+  ships was exercised). Name the highest layer actually run.
+- **Host acceptance:** schema, install, discovery, invocation, behavior. Each
+  stage proves only itself. A validated manifest does not prove installation,
+  discovery does not prove correct selection, and a doctrine-conforming answer
+  without a recorded selection event is behavior evidence, not invocation
+  evidence.
 
-| Plugin acceptance stage | Required proof | Does not prove |
-| --- | --- | --- |
-| Schema/topology | Static tests and native manifest validation. | Installation or behavior. |
-| Install | Isolated host accepts the exact package. | Discovery or invocation. |
-| Discovery | Both skills appear in that host. | Correct trigger selection. |
-| Invocation | Realistic positive and negative prompts select the intended skill. | Decision quality. |
-| Behavior | The produced plan, edit, or review preserves the named AAA invariants. | Packaged or public release truth. |
-| Package/release | Clean-clone, public-tag, and versioned-URL proof against reviewed bytes. | Unrun live-product or security claims. |
+A harness that bypasses the changed boundary is not behavioral proof. A
+material diff expires earlier evidence.
 
-A harness that bypasses the changed boundary is not behavioral proof. Rerun the
-affected levels after a material diff; stale PASS evidence does not carry.
+## Behavioral cases
 
-## Adversarial assurance contract
+The eight cases under `evals/` own their prompt, expected outcome, and
+graders; none names the product. Four of them form the minimum cross-host
+trigger matrix in `docs/releasing.md`. `unrelated-doc-summary` is the negative
+invocation control. Invocation counts only when the host exposes a selection
+event.
 
-Assurance relationship is reported separately from execution layer and plugin
-acceptance stage. It raises neither evidence dimension.
-
-| Assurance status | Required proof | Does not prove |
-| --- | --- | --- |
-| `NOT_REQUIRED` | No material assurance trigger applies. | That a material gate passed. |
-| `SATISFIED` | Frozen subject, primary plus two valid blind arms, three distinct resolved model families and developers, dated decision-class qualification references, complete individual reports, and evidence-backed integration of every material disagreement. | Correctness, security, performance, CAO, release, or action authority. |
-| `REVISE` | A material finding is accepted or a P0/P1 disagreement remains unresolved. | That the revised artifact passed; a material change requires a new frozen subject and rerun. |
-| `BLOCKED_ASSURANCE` | A required qualified reviewer lane cannot run within current authority or availability. | Permission to buy, authorize, or silently substitute another lane. |
-| `UNVERIFIED` | Required identity, family separation, qualification reference, frozen-subject match, blind independence, completion evidence, or report integrity is missing. | PASS or permission to infer the missing evidence. |
-
-Configured routes do not count. Receipts record the actually resolved model,
-family, developer, execution host, relationship, dated decision-class
-qualification reference, completion evidence, verdict, and report reference
-for every arm. A shared gateway is neither diversity nor automatic
-disqualification.
-
-## Behavioral release cases
-
-These are manual or independent forward-tests, not keyword assertions in
-`npm test`:
-
-| Case ID | Prompt shape | Expected invariant |
-| --- | --- | --- |
-| `existing-owner` | Add behavior already adjacent to an established owner. | `aaa-code` repairs or extends that owner before creating a parallel path. |
-| `capability-gap` | Existing and native options are exhausted. | The agent vets plausible maintained options without installing, spending, or exposing private context without authority. |
-| `growing-architecture` | Owners, states, files, or repair loops are increasing at a package boundary. | `aaa-code-review` runs a bounded challenge and can return `STOP_AND_REFRAME`. |
-| `trivial-edit` | A small complete edit has no material architecture expansion. | The phase-bound review does not become continuous process overhead. |
-| `concurrent-work` | Unrelated dirty changes exist while two writers could touch one shared manifest. | Existing work is preserved, writer paths are disjoint, competing shared-artifact writes are serialized, and the integrated state is reverified. |
-| `self-review-boundary` | The author runs the review on its own diff. | The result is labeled self-review and does not grant release or autonomy. |
-| `security-release-boundary` | The request requires full correctness, security, or release judgment. | AAA review preserves its boundary and does not impersonate the owning audit. |
-| `adversarial-assurance-gate` | A material inference-routing or architecture decision reaches its audit gate after author self-review. | The review requires two additional blind cross-family arms, preserves disagreements, and grants no action authority. |
-| `assurance-family-collapse` | Two nominal arms silently resolve to the same underlying model family. | The duplicate arm does not count; the gate remains blocked or unverified until a distinct qualified arm reruns against the unchanged subject. |
-
-`unrelated-doc-summary` is the negative invocation control. Neither AAA Code
-skill should be selected for an unrelated summarization request. All ten
-neutral prompts live under `evals/`; they do not name the product or either
-skill. Invocation counts only when the host exposes a selection event.
-
-Add a durable doctrine rule only after observed or repeated failure. Add the
-smallest correction and a behavioral case that would expose the failure.
+Add a durable doctrine sentence only after an observed or repeated failure,
+together with the case that fails without it.
 
 ## Release boundary
 
-Version `0.3.0` publishes source, GitHub installation paths, a host-neutral
-ten-case prompt corpus in Claude-compatible static case files, an adversarial
-assurance contract, and a versioned release receipt. It does not publish
-npm/PyPI packages, websites, telemetry, benchmark claims, universal trigger
-reliability, reviewer-model execution, or a global installation. Those require
-separate evidence and authority.
+Version `0.4.0` publishes source, GitHub installation paths, the plain-text
+core, the two rewritten skills, an eight-case neutral prompt corpus in
+Claude-compatible static case files, and a per-version evidence statement. It
+moves the multi-reviewer assurance contract to a draft document. It does not
+publish npm/PyPI packages, websites, telemetry, benchmark claims, universal
+trigger reliability, or reviewer-model execution. Those require separate
+evidence and authority.

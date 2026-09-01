@@ -1,108 +1,29 @@
 ---
 name: aaa-code
-description: Choose the smallest complete change at the correct native owner when writing, editing, debugging, testing, or refactoring code. Use for implementation work, placement decisions, duplicate cleanup, and scope control; keep security and explicit requirements intact.
+description: Implementation doctrine for changing an existing codebase: one owner, one complete path, no unnecessary machinery. Use whenever you write, fix, refactor, or test code, especially the moment before you add a new file, class, helper, wrapper, manager, store, queue, cache, validator, adapter, hook, dependency, or background job, or when a small fix keeps growing.
 license: MIT
 metadata:
-  version: "0.3.0"
+  version: "0.4.0"
   author: FYN Labs
 ---
 
 # AAA Code
 
-AAA Code means **Aligned, Autonomous, Auditable**:
+**One owner. One complete path. No mechanism the requested behavior does not need.**
 
-- **Aligned:** solve the original problem at its existing native owner.
-- **Autonomous:** make the maximum safe progress without inventing approval or
-  coordination machinery.
-- **Auditable:** keep the path small, explicit, and proven by a real check.
+1. Write the problem in one sentence. Solve that sentence, nothing wider.
+2. The owner of a behavior is the one unit that already changes for that reason. Change it there, even when inconvenient. If the framework or configuration already does it, the framework is the owner.
+3. Before creating anything, stop at the first rung that fully solves the sentence: does it need to exist? can the owner be extended? can the framework or configuration do it? can the standard library or an installed dependency do it? can a deletion or one targeted change do it? Only then build, at the owner.
+4. Do not add a helper, wrapper, manager, store, queue, cache, adapter, hook, dependency, background job, or state machine to avoid touching the owner.
+5. Complete means: reachable from the real entry point, every existing caller still works, the first failure a user would hit is handled, and you ran it at least once. Smaller than complete is not simpler; it is unfinished.
+6. Never make something smaller by removing authentication, authorization, validation at a trust boundary, error handling, data-loss protection, or a required test.
+7. Prove the change through its real entry point: the success path and one failure path. Name the command you ran, the layer it covers (static, unit, integrated, release), and what is still unverified.
+8. A change is material when it adds or removes an owner, a dependency, persistent state, or a cross-component path, or touches authentication, money, data loss, or rollback. Everything else is trivial: verify it and move on.
+9. At a material boundary, stop before the next expansion and ask whether you are still solving the sentence from line 1, and what can disappear. Not after every small edit.
+10. Research is not permission. Never install, buy, push, publish, or send data outside the repository without an explicit grant.
+11. Report: owner reused, mechanism avoided, files changed, check run, still unverified.
 
-Simple is not the fewest characters. It is one clear owner, one complete path,
-and no mechanism that the requested behavior does not need.
-
-## Decision ladder
-
-Before adding code, walk the ladder in order and stop at the first complete
-solution:
-
-1. **Need:** Does this behavior or artifact need to exist at all?
-2. **Reuse:** Does the repository already implement it or have a clear owner
-   that can be repaired or extended?
-3. **Native:** Can the framework, runtime, agent, platform, protocol, or
-   configuration already do it?
-4. **Available:** Can the standard library or an already-installed dependency
-   do it without adding another owner?
-5. **Reduce:** Can deletion, configuration, one targeted change, or removal of
-   a workaround solve it?
-6. **Vet:** If a proven capability gap remains, can a maintained upstream,
-   community solution, skill, or tool close it with less ownership than custom
-   code?
-7. **Create:** Otherwise implement the smallest complete solution at the
-   correct owner, including its wiring and proportionate verification.
-
-Do not create a helper, wrapper, manager, store, queue, cache, validator,
-broker, plugin, hook, dependency, background job, or state machine until the
-earlier rungs have been disproven by repository evidence.
-
-## Work loop
-
-1. **Frame:** state the requested behavior, the smallest acceptable outcome,
-   scope boundaries, and the check that will prove it.
-2. **Orient:** load repository-local rules and named sources of truth, then
-   inspect the owning layer, callers, tests, configuration, lockfile, exact
-   runtime or framework version, current worktree state, and recent matching
-   work. For bugs, find the root cause and affected callers before patching the
-   symptom. For a rename, move, refactor, or migration, inspect direct and
-   transitive users, dynamic references, and the behavior baseline first.
-3. **Place:** extend the unit that already changes for this reason. One
-   invariant has one owner. Keep generic layers generic, and repair data or
-   behavior lost at a boundary at that boundary. Do not add parallel ownership
-   because the correct owner is inconvenient.
-4. **Edit:** make the narrow change, preserve unrelated behavior, formatting,
-   and worktree changes, and remove only artifacts made obsolete by this
-   change. Never reset, overwrite, or discard work whose ownership is unclear.
-5. **Verify:** run a check proportionate to the risk against the final integrated
-   state. For material behavior, exercise the real entry point, the success
-   path, and a relevant error or recovery path. A test or harness that bypasses
-   the changed boundary is not proof. State whether the evidence covers source,
-   unit, integration, runtime, package, or release behavior; one layer does not
-   imply another. A material diff expires earlier PASS evidence.
-6. **Review:** inspect the final diff for duplicate ownership, partial wiring,
-   hidden state, swallowed errors, speculative machinery, and scope creep.
-
-Continue autonomously inside the granted scope. Ask only when a missing choice
-materially changes behavior, ownership, authority, data exposure, cost, or
-rollout risk.
-
-## Capability gaps
-
-Run one bounded acquisition pass only after the earlier ladder rungs fail.
-Record the concrete gap and compare only plausible maintained options. Before
-adopting anything, check provenance, license, maintenance and update path,
-privacy, supply-chain exposure, rollback, cost, and current authority.
-
-Research does not authorize installation, purchase, credentials, private-data
-transfer, or publication. After an authorized adoption, rerun the original
-quality and behavior checks. If custom code is still necessary, record its
-owner, tests, migration path, and the condition for deleting or replacing it.
-
-## Shared work
-
-Parallel read-only work can share a frozen artifact; parallel writers need
-disjoint path ownership. Serialize competing writes to the same shared
-lockfile, schema, manifest, snapshot, or generated index. Reviewers inspect a
-frozen diff or artifact, not a moving writer worktree. A coordinating integrator
-combines the slices and reruns the relevant checks on the combined state.
-Delegation never expands authority.
-
-## Stop signals
-
-At a safe material phase boundary, stop before the next expansion when scope,
-production lines, owner count, state count, or repair loops keep growing.
-Recheck whether you are still solving the original problem, whether an upstream
-or native owner was missed, and whether code can disappear.
-
-Do not run this meta-check after every trivial edit. Use
-`$aaa-code-review` for an explicit or package-gate challenge.
+Aligned to the one-sentence problem. Autonomous inside the granted scope. Auditable by a real check.
 
 ## Safety floor
 
@@ -116,8 +37,32 @@ Never simplify away:
 
 If the smaller solution weakens one of these, it is not complete.
 
+## Example
+
+Request: add CSV receipts. The repository already has `ReceiptWriter` and a formatter registry. A proposal adds `CsvManager`, `ExportQueue`, and `ReceiptStore`: three new owners and one new persisted state for a request that asks for a format.
+
+Smallest complete path: register a `csv` formatter in the existing registry; `ReceiptWriter` already owns writing. Evidence: `grep -ri csv src/` finds no formatter, and `src/formatters/index.ts` registers formatters by name. Check: one good row, one malformed row, then the real export command.
+
+Counter-example: a retry count changed from 2 to 3 in configuration adds no owner, state, or dependency. Run the test that reads the value and stop. No review.
+
+## Work loop
+
+1. **Frame:** the one-sentence problem, the smallest acceptable outcome, and the check that will prove it.
+2. **Orient:** read the repository rules, then the owner, its callers, its tests, and the lockfile. For a bug, find the root cause first. For a rename, move, or migration, find every direct, transitive, and dynamic reference first.
+3. **Place:** put the change in the owner. Keep generic layers generic; repair data lost at a boundary at that boundary.
+4. **Edit:** make the narrow change. Preserve unrelated behavior, formatting, and worktree changes. Never discard work you did not create.
+5. **Verify:** line 7, on the final integrated state. A harness that bypasses the changed boundary is not proof. A rung is disproven only by a named search, file, or package check you can quote, never by failing to look.
+
+Default authority is to read and edit tracked files in this repository and run its existing checks. Ask when a choice would change behavior, ownership, authority, data exposure, cost, or rollout risk. For an explicit challenge at a material boundary, use the `aaa-code-review` skill by whatever means your host invokes a skill.
+
 ## Completion report
 
-Report the owner reused, mechanism avoided or removed, files changed, evidence
-layer, exact verification run, and anything still unverified. Do not claim
-general correctness from a narrow green check.
+```text
+Owner reused:
+Mechanism avoided or removed: what, and the rung that ruled it out
+Files changed:
+Ladder evidence for anything created: the search, framework check, or lockfile check, one line each
+Check run: exact command and result, or NO CHECK EXECUTED THE CHANGE
+Evidence layer: static | unit | integrated | release
+Still unverified:
+```

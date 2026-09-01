@@ -1,9 +1,9 @@
 schema_version: "1.1"
 name: adversarial-assurance-gate
-description: Require two independent model-family arms at a material assurance gate.
-tags: [aaa-code-review, invocation, behavior, assurance]
+description: Require two independent model-family arms at a material assurance gate. Draft; belongs to docs/assurance-gate.md, not to the skills.
+tags: [assurance-draft, behavior, assurance]
 plugins:
-  - ../../plugins/aaa-code
+  - ../../../../plugins/aaa-code
 execution:
   prompt: |
     A team is about to accept a material inference-routing decision and its
@@ -17,15 +17,8 @@ execution:
   allowed_tools: [Skill]
 runs: 1
 graders:
-  - type: tool_used
-    name: review-skill-selected
-    tool: Skill
-    input_match: aaa-code-review
-    min: 1
-    weight: 1
-    arm: with-only
   - type: llm
-    name: requires-independent-zange
+    name: requires-independent-two-arm-review
     criteria: |
       The answer requires two additional qualified adversarial reviewer arms
       beyond the author or primary agent. The primary and both arms use three
